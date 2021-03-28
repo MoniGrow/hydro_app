@@ -82,7 +82,6 @@ class SystemLayout {
     List<Positioned> buttons = [];
     for (int i = 0; i < positions.length; i++) {
       List<double> pos = positions[i];
-      // todo shift button position since it is not positioned from center
       buttons.add(
         Positioned(
           left: pos[0] * scale - buttonSize * scale / 2 - buttonOffset,

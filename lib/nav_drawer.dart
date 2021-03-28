@@ -10,7 +10,15 @@ class NavDrawer extends StatelessWidget {
           child: Text("Drawer Header"),
         ),
         ListTile(
-          title: Text("Item 1"),
+          title: Text("Profile"),
+          onTap: null,
+        ),
+        ListTile(
+          title: Text("Plant monitor"),
+          onTap: null,
+        ),
+        ListTile(
+          title: Text("Pet screen"),
           onTap: null,
         ),
       ],
