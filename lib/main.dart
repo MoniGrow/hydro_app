@@ -33,9 +33,12 @@ class TitlePage extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
-            FractionallySizedBox(
-              child: cat,
-              widthFactor: 0.5,
+            Container(
+              padding: EdgeInsets.only(top: 50),
+              child: FractionallySizedBox(
+                child: cat,
+                widthFactor: 0.5,
+              ),
             ),
             Container(
               padding: EdgeInsets.only(top: 100),

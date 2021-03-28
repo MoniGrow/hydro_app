@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:hydro_app/nav_drawer.dart';
 import 'hydro_overview.dart';
 
 class Monitor extends StatefulWidget {
@@ -20,27 +21,13 @@ class _MonitorState extends State<Monitor> {
         title: Text("Plant monitor"),
       ),
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Text("Drawer Header"),
-            ),
-            ListTile(
-              title: Text("Item 1"),
-              onTap: null,
-            ),
-          ],
-        ),
+        child: NavDrawer(),
       ),
       body: Center(
         child: Container(
           child: Column(
             children: <Widget>[
-              Container(
-                child: HydroOverview(),
-                margin: EdgeInsets.only(top: 10, right: 10, left: 10),
-              ),
+              HydroOverview(),
               Text("Put"),
               Text("stats"),
               Text("here"),
