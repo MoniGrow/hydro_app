@@ -24,3 +24,8 @@ class Utils {
     );
   }
 }
+
+class ScreenPaths {
+  static const String home = "/";
+  static const String monitor = "/monitor";
+}

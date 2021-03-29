@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'plant_monitor/monitor.dart';
+import 'package:hydro_app/utils.dart';
+import 'package:hydro_app/plant_monitor/monitor.dart';
 
 void main() {
   runApp(HydroApp());
@@ -11,10 +12,13 @@ class HydroApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Basil tastes good",
+      routes: {
+        ScreenPaths.home: (context) => TitlePage(),
+        ScreenPaths.monitor: (context) => Monitor(),
+      },
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: TitlePage(),
     );
   }
 }
@@ -22,8 +26,6 @@ class HydroApp extends StatelessWidget {
 class TitlePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
     Image cat = Image(
       image: AssetImage("graphics/CAT_IDEA_ROUGH_2_CROPPED.png"),
       fit: BoxFit.contain,
@@ -45,9 +47,9 @@ class TitlePage extends StatelessWidget {
               child: ElevatedButton(
                 child: Text("Plant monitor"),
                 onPressed: () {
-                  Navigator.push(
+                  Navigator.pushNamed(
                     context,
-                    MaterialPageRoute(builder: (context) => Monitor()),
+                    "/monitor",
                   );
                 },
               ),

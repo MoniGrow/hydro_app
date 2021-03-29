@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:hydro_app/nav_drawer.dart';
-import 'hydro_overview.dart';
+import 'package:hydro_app/utils.dart';
+import 'package:hydro_app/plant_monitor/hydro_overview.dart';
 
 class Monitor extends StatefulWidget {
   @override
@@ -21,7 +22,7 @@ class _MonitorState extends State<Monitor> {
         title: Text("Plant monitor"),
       ),
       drawer: Drawer(
-        child: NavDrawer(),
+        child: NavDrawer(ScreenPaths.monitor),
       ),
       body: Center(
         child: Container(

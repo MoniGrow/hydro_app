@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
 
+import 'package:hydro_app/utils.dart';
+
 class NavDrawer extends StatelessWidget {
+  final String currentPath;
+
+  NavDrawer(this.currentPath);
+
   @override
   Widget build(BuildContext context) {
+    Function navigateTo = (path) {
+      Navigator.pop(context);
+      if (currentPath != path) {
+        Navigator.pushNamed(
+          context,
+          path,
+        );
+      }
+    };
     return ListView(
       padding: EdgeInsets.zero,
       children: <Widget>[
@@ -15,7 +30,7 @@ class NavDrawer extends StatelessWidget {
         ),
         ListTile(
           title: Text("Plant monitor"),
-          onTap: null,
+          onTap: () => navigateTo(ScreenPaths.monitor),
         ),
         ListTile(
           title: Text("Pet screen"),
