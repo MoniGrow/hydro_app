@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hydro_app/plant_monitor/plant_editor.dart';
 
 import 'package:hydro_app/utils.dart';
 import 'package:hydro_app/plant_monitor/monitor.dart';
@@ -15,6 +16,7 @@ class HydroApp extends StatelessWidget {
       routes: {
         ScreenPaths.home: (_) => TitlePage(),
         ScreenPaths.monitor: (_) => Monitor(),
+        ScreenPaths.plantEdit: (_) => PlantEditor(),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,

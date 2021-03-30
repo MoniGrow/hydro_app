@@ -80,7 +80,7 @@ class SystemLayout {
   List<Widget> generateButtons(double scale) {
     // this should not be needed, but it is
     int buttonOffset = 4;
-    List<Positioned> buttons = [];
+    List<Widget> buttons = [];
     for (int i = 0; i < positions.length; i++) {
       List<double> pos = positions[i];
       buttons.add(

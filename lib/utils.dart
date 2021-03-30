@@ -28,5 +28,6 @@ class Utils {
 class ScreenPaths {
   static const String home = "/";
   static const String monitor = "/monitor";
+  static const String plantEdit = monitor + "/edit";
   static const String pet = "/pet";
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:hydro_app/utils.dart';
+
 class CellPopupRoute extends PopupRoute {
   @override
   Color get barrierColor => Colors.black.withAlpha(150);
@@ -23,12 +25,46 @@ class CellPopupRoute extends PopupRoute {
 class CellPopup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Widget buttonRow = Row(
+      children: [
+        IconButton(
+          icon: Icon(Icons.cancel_outlined),
+          onPressed: () => Navigator.pop(context),
+        ),
+        Spacer(),
+        Container(
+          margin: EdgeInsets.only(right: 10),
+          child: OutlinedButton(
+            child: Text("Edit plant"),
+            onPressed: () =>
+                Navigator.pushNamed(context, ScreenPaths.plantEdit),
+          ),
+        ),
+      ],
+    );
+    Widget popupBody = Container(
+      // constraints: BoxConstraints.expand(),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Text("hey hey hey"),
+            ],
+          ),
+          Spacer(),
+          buttonRow,
+        ],
+      ),
+    );
+
     return SafeArea(
       child: Container(
         constraints: BoxConstraints.expand(),
         margin: EdgeInsets.all(45),
         color: Colors.white,
-        child: Text("hello there"),
+        child: Scaffold(
+          body: popupBody,
+        ),
       ),
     );
   }
