@@ -10,6 +10,7 @@ class NavDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Function navigateTo = (path) {
+      // pop drawer from stack
       Navigator.pop(context);
       if (currentPath != path) {
         Navigator.pushNamed(
@@ -34,7 +35,7 @@ class NavDrawer extends StatelessWidget {
         ),
         ListTile(
           title: Text("Pet screen"),
-          onTap: null,
+          onTap: () => navigateTo(ScreenPaths.pet),
         ),
       ],
     );

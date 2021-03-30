@@ -28,4 +28,5 @@ class Utils {
 class ScreenPaths {
   static const String home = "/";
   static const String monitor = "/monitor";
+  static const String pet = "/pet";
 }

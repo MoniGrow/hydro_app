@@ -13,8 +13,8 @@ class HydroApp extends StatelessWidget {
     return MaterialApp(
       title: "Basil tastes good",
       routes: {
-        ScreenPaths.home: (context) => TitlePage(),
-        ScreenPaths.monitor: (context) => Monitor(),
+        ScreenPaths.home: (_) => TitlePage(),
+        ScreenPaths.monitor: (_) => Monitor(),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -30,6 +30,9 @@ class TitlePage extends StatelessWidget {
       image: AssetImage("graphics/CAT_IDEA_ROUGH_2_CROPPED.png"),
       fit: BoxFit.contain,
     );
+    Function leaveHome = (path) {
+      Navigator.popAndPushNamed(context, path);
+    };
     return Container(
       color: Colors.green,
       child: Center(
@@ -46,17 +49,12 @@ class TitlePage extends StatelessWidget {
               padding: EdgeInsets.only(top: 100),
               child: ElevatedButton(
                 child: Text("Plant monitor"),
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    "/monitor",
-                  );
-                },
+                onPressed: () => leaveHome(ScreenPaths.monitor),
               ),
             ),
             ElevatedButton(
               child: Text("Pet"),
-              onPressed: null,
+              onPressed: () => leaveHome(ScreenPaths.pet),
             ),
           ],
         ),

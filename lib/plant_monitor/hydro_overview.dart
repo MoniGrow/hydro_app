@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hydro_app/plant_monitor/cell_popup.dart';
 
 import 'package:hydro_app/utils.dart';
 
@@ -49,7 +50,7 @@ class CellButton extends StatelessWidget {
       child: IconButton(
         padding: EdgeInsets.all(0),
         icon: Icon(Icons.circle),
-        onPressed: () => print("hello button $cell"),
+        onPressed: () => Navigator.push(context, CellPopupRoute()),
       ),
     );
   }
