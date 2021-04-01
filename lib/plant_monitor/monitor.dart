@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:hydro_app/nav_drawer.dart';
+import 'package:hydro_app/plant_monitor/monitor_stat.dart';
 import 'package:hydro_app/utils.dart';
 import 'package:hydro_app/plant_monitor/hydro_overview.dart';
 
@@ -22,16 +23,16 @@ class _MonitorState extends State<Monitor> {
       drawer: Drawer(
         child: NavDrawer(ScreenPaths.monitor),
       ),
-      body: Center(
-        child: Container(
-          child: Column(
-            children: <Widget>[
-              HydroOverview(),
-              Text("Put"),
-              Text("stats"),
-              Text("here"),
-            ],
-          ),
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            Center(
+              child: HydroOverview(),
+            ),
+            MonitorStat("light"),
+            MonitorStat("temperature"),
+            MonitorStat("pH"),
+          ],
         ),
       ),
     );

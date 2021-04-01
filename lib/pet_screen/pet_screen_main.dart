@@ -8,6 +8,8 @@ class PetScreenMain extends StatefulWidget {
 class _PetScreenMainState extends State<PetScreenMain> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(),
+    );
   }
 }

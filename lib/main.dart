@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:hydro_app/plant_monitor/plant_editor.dart';
 
 import 'package:hydro_app/utils.dart';
+import 'package:hydro_app/title.dart';
 import 'package:hydro_app/plant_monitor/monitor.dart';
+import 'package:hydro_app/pet_screen/pet_screen_main.dart';
+import 'package:hydro_app/plant_monitor/plant_editor.dart';
 
 void main() {
   runApp(HydroApp());
@@ -17,49 +19,10 @@ class HydroApp extends StatelessWidget {
         ScreenPaths.home: (_) => TitlePage(),
         ScreenPaths.monitor: (_) => Monitor(),
         ScreenPaths.plantEdit: (_) => PlantEditor(),
+        ScreenPaths.pet: (_) => PetScreenMain(),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
-      ),
-    );
-  }
-}
-
-class TitlePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    Image cat = Image(
-      image: AssetImage("graphics/CAT_IDEA_ROUGH_2_CROPPED.png"),
-      fit: BoxFit.contain,
-    );
-    Function leaveHome = (path) {
-      Navigator.popAndPushNamed(context, path);
-    };
-    return Container(
-      color: Colors.green,
-      child: Center(
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.only(top: 50),
-              child: FractionallySizedBox(
-                child: cat,
-                widthFactor: 0.5,
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.only(top: 100),
-              child: ElevatedButton(
-                child: Text("Plant monitor"),
-                onPressed: () => leaveHome(ScreenPaths.monitor),
-              ),
-            ),
-            ElevatedButton(
-              child: Text("Pet"),
-              onPressed: () => leaveHome(ScreenPaths.pet),
-            ),
-          ],
-        ),
       ),
     );
   }

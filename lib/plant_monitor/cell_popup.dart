@@ -22,6 +22,8 @@ class CellPopupRoute extends PopupRoute {
   Duration get transitionDuration => Duration();
 }
 
+// todo fancier popup that is not just a rectangle
+// also todo make it scrollable
 class CellPopup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
