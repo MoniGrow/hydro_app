@@ -6,7 +6,7 @@ class TitlePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Image cat = Image(
-      image: AssetImage("graphics/CAT_IDEA_ROUGH_2_CROPPED.png"),
+      image: AssetImage(Images.cat),
       fit: BoxFit.contain,
     );
     Function leaveHome = (path) {

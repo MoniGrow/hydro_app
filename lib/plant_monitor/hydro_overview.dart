@@ -11,7 +11,7 @@ class HydroOverview extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     BoxDecoration overhead = BoxDecoration(
       image: DecorationImage(
-        image: AssetImage("graphics/overhead_view_basic.png"),
+        image: AssetImage(Images.overview_1),
         fit: BoxFit.contain,
       ),
       border: Border.all(
@@ -50,7 +50,7 @@ class CellButton extends StatelessWidget {
       child: IconButton(
         padding: EdgeInsets.all(0),
         icon: Icon(Icons.circle),
-        onPressed: () => Navigator.push(context, CellPopupRoute()),
+        onPressed: () => Navigator.push(context, CellPopupRoute(cell)),
       ),
     );
   }

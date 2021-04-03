@@ -12,19 +12,25 @@ class CellPopupRoute extends PopupRoute {
   @override
   String get barrierLabel => "";
 
+  final int cell;
+
+  CellPopupRoute(this.cell);
+
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation) {
-    return CellPopup();
+    return CellPopup(cell);
   }
 
   @override
   Duration get transitionDuration => Duration();
 }
 
-// todo fancier popup that is not just a rectangle
-// also todo make it scrollable
 class CellPopup extends StatelessWidget {
+  final int cell;
+
+  CellPopup(this.cell);
+
   @override
   Widget build(BuildContext context) {
     Widget buttonRow = Row(
@@ -45,15 +51,39 @@ class CellPopup extends StatelessWidget {
       ],
     );
     Widget popupBody = Container(
-      // constraints: BoxConstraints.expand(),
       child: Column(
         children: [
           Row(
             children: [
-              Text("hey hey hey"),
+              Container(
+                margin: EdgeInsets.only(left: 15, top: 15),
+                width: 75,
+                height: 75,
+                child: Image(
+                  image: AssetImage(Images.plant_basil),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 45, top: 10),
+                child: Text(
+                  "Basil",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ],
           ),
+          Text("Cell $cell"),
           Spacer(),
+          Text("Time planted: 11/23/2017 15:23:18"),
+          Spacer(),
+          Text("Age: 118 hours"),
+          Spacer(
+            flex: 3,
+          ),
           buttonRow,
         ],
       ),

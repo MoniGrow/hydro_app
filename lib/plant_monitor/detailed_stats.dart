@@ -92,7 +92,7 @@ class _DetailedStatsState extends State<DetailedStats> {
                           DataCell(Text(d.time.toString())),
                           DataCell(Text(d.stat.toString())),
                         ],
-                      ))
+                      )),
                 ],
               ),
             ),

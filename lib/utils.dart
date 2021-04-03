@@ -31,3 +31,12 @@ class ScreenPaths {
   static const String plantEdit = monitor + "/edit";
   static const String pet = "/pet";
 }
+
+class Images {
+  static const String cat = "graphics/CAT_IDEA_ROUGH_2_CROPPED.png";
+  static const String overview_1 = "graphics/overhead_view_basic.png";
+
+  static const String plant_basil = "graphics/plants/basil.jpg";
+  static const String plant_cilantro = "graphics/plants/cilantro.jpg";
+  static const String plant_rosemary = "graphics/plants/rosemary.jpg";
+}
