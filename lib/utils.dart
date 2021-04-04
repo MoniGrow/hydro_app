@@ -29,12 +29,19 @@ class ScreenPaths {
   static const String home = "/";
   static const String monitor = "/monitor";
   static const String plantEdit = monitor + "/edit";
+
   static const String pet = "/pet";
+  static const String pet_customize = pet + "/customize";
 }
 
 class Images {
   static const String cat = "graphics/CAT_IDEA_ROUGH_2_CROPPED.png";
   static const String overview_1 = "graphics/overhead_view_basic.png";
+  static const String qb = "graphics/qb.jpg";
+
+  static const String brain = "graphics/brain.jpg";
+  static const String tree = "graphics/tree.jpeg";
+  static const String shopfront = "graphics/shopfront.jpg";
 
   static const String plant_basil = "graphics/plants/basil.jpg";
   static const String plant_cilantro = "graphics/plants/cilantro.jpg";
