@@ -21,25 +21,27 @@ class NavBottom extends StatelessWidget {
     return BottomAppBar(
       child: Row(
         children: [
-          Spacer(),
           // plant monitor
-          IconButton(
-            icon: Icon(Icons.waves),
-            onPressed: () => navigateTo(context, ScreenPaths.monitor),
+          Expanded(
+            child: IconButton(
+              icon: Icon(Icons.waves),
+              onPressed: () => navigateTo(context, ScreenPaths.monitor),
+            ),
           ),
-          Spacer(),
           // pet screen
-          IconButton(
-            icon: Icon(Icons.child_care),
-            onPressed: () => navigateTo(context, ScreenPaths.pet),
+          Expanded(
+            child: IconButton(
+              icon: Icon(Icons.child_care),
+              onPressed: () => navigateTo(context, ScreenPaths.pet),
+            ),
           ),
-          Spacer(),
           // profile probably
-          IconButton(
-            icon: Icon(Icons.assignment_ind),
-            onPressed: null,
+          Expanded(
+            child: IconButton(
+              icon: Icon(Icons.assignment_ind),
+              onPressed: () => navigateTo(context, ScreenPaths.profile),
+            ),
           ),
-          Spacer(),
         ],
       ),
     );

@@ -6,6 +6,7 @@ import 'package:hydro_app/plant_monitor/monitor.dart';
 import 'package:hydro_app/plant_monitor/plant_editor.dart';
 import 'package:hydro_app/pet_screen/pet_screen_main.dart';
 import 'package:hydro_app/pet_screen/pet_customize_main.dart';
+import 'package:hydro_app/profile_settings/profile_main.dart';
 
 void main() {
   runApp(HydroApp());
@@ -22,6 +23,7 @@ class HydroApp extends StatelessWidget {
         ScreenPaths.plantEdit: (_) => PlantEditor(),
         ScreenPaths.pet: (_) => PetScreenMain(),
         ScreenPaths.pet_customize: (_) => PetCustomizeMain(),
+        ScreenPaths.profile: (_) => ProfileMain(),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
