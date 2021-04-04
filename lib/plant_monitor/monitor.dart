@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:hydro_app/nav_drawer.dart';
+import 'package:hydro_app/nav_bottom.dart';
 import 'package:hydro_app/plant_monitor/monitor_stat.dart';
 import 'package:hydro_app/utils.dart';
 import 'package:hydro_app/plant_monitor/hydro_overview.dart';
@@ -35,6 +36,7 @@ class _MonitorState extends State<Monitor> {
           ],
         ),
       ),
+      bottomNavigationBar: NavBottom(ScreenPaths.monitor),
     );
   }
 }
