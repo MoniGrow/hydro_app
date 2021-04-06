@@ -8,6 +8,7 @@ import 'package:hydro_app/pet_screen/pet_screen_main.dart';
 import 'package:hydro_app/pet_screen/pet_customize_main.dart';
 import 'package:hydro_app/profile_settings/profile_main.dart';
 
+//add comments to code
 void main() {
   runApp(HydroApp());
 }
