@@ -7,7 +7,7 @@ class TitlePage extends StatelessWidget {
   Widget build(BuildContext context) {
     Image cat = Image(
       image: AssetImage(Images.cat),
-      fit: BoxFit.contain,
+      fit: BoxFit.scaleDown,
     );
     Function leaveHome = (path) {
       Navigator.popAndPushNamed(context, path);
@@ -17,24 +17,23 @@ class TitlePage extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
+            Spacer(flex:4),
             Container(
-              padding: EdgeInsets.only(top: 50),
-              child: FractionallySizedBox(
-                child: cat,
-                widthFactor: 0.5,
-              ),
+              child:cat,
             ),
+            Spacer(flex:4),
             Container(
-              padding: EdgeInsets.only(top: 100),
               child: ElevatedButton(
                 child: Text("Plant monitor"),
                 onPressed: () => leaveHome(ScreenPaths.monitor),
               ),
             ),
+           // Spacer(flex:1),
             ElevatedButton(
               child: Text("Pet"),
               onPressed: () => leaveHome(ScreenPaths.pet),
             ),
+            Spacer(flex:3)
           ],
         ),
       ),
