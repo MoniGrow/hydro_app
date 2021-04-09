@@ -1,33 +1,62 @@
 import 'package:flutter/material.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:hydro_app/nav_bottom.dart';
 import 'package:hydro_app/utils.dart';
+import 'package:hydro_app/profile_settings/google_auth_buttons.dart';
 
 class ProfileMain extends StatelessWidget {
+  final User user;
+
+  ProfileMain(this.user);
+
   @override
   Widget build(BuildContext context) {
+    // TODO keeping this stateless shouldn't be too bad right?
+    ImageProvider pfp;
+    String name;
+    if (user != null) {
+      pfp = NetworkImage(user.photoURL);
+      name = user.displayName;
+    } else {
+      pfp = AssetImage(Images.profile_blank);
+      name = "User";
+    }
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
-            Row(
-              children: [
-                Container(
-                  width: 100,
-                  height: 100,
-                  margin: EdgeInsets.only(top: 30, bottom: 50 , left: 20),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: AssetImage(Images.profile_blank),
+            Container(
+              margin: EdgeInsets.only(
+                top: 20,
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 100,
+                    height: 100,
+                    margin: EdgeInsets.only(left: 20),
+                    child: ClipOval(
+                      child: Image(
+                        image: pfp,
+                      ),
                     ),
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 30),
-                  child: Text("First name Last name"),
-                ),
-              ],
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Container(
+                          child: Text(name),
+                        ),
+                        user != null
+                            ? GoogleSignOutButton()
+                            : GoogleSignInButton(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
             Row(
               children: [

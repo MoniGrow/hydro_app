@@ -25,6 +25,31 @@ class Utils {
   }
 }
 
+class DrawBorder extends StatelessWidget {
+  final Widget child;
+  final Color color;
+  final double width;
+
+  DrawBorder({
+    this.color = Colors.black,
+    this.width = 2.0,
+    @required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: color,
+          width: width,
+        ),
+      ),
+      child: child,
+    );
+  }
+}
+
 class ScreenPaths {
   static const String home = "/";
 
