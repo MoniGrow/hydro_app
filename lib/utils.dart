@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Utils {
+  /// Returns a list of (x, y) points.
   static List<List<double>> meshCoords(List<double> xArr, List<double> yArr) {
     List<List<double>> mesh = [];
     for (double x in xArr) {
@@ -10,21 +11,9 @@ class Utils {
     }
     return mesh;
   }
-
-  static Container drawBorder(Widget child,
-      [Color color = Colors.black, double width = 2]) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.black,
-          width: 2,
-        ),
-      ),
-      child: child,
-    );
-  }
 }
 
+/// Utility widget to draw a border around some child (for debugging).
 class DrawBorder extends StatelessWidget {
   final Widget child;
   final Color color;

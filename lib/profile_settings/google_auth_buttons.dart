@@ -20,8 +20,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
       _isSigningIn = true;
     });
 
-    User user =
-    await Authentication.signInWithGoogle(context: context);
+    User user = await Authentication.signInWithGoogle(context: context);
 
     setState(() {
       _isSigningIn = false;
@@ -29,9 +28,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
 
     if (user != null) {
       Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ProfileMain(user)));
+          context, MaterialPageRoute(builder: (context) => ProfileMain(user)));
     }
 
     setState(() {
@@ -92,6 +89,18 @@ class GoogleSignOutButton extends StatefulWidget {
 class _GoogleSignOutButtonState extends State<GoogleSignOutButton> {
   bool _isSigningOut = false;
 
+  void _signOut() async {
+    setState(() {
+      _isSigningOut = true;
+    });
+    await Authentication.signOut(context: context);
+    setState(() {
+      _isSigningOut = false;
+    });
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => ProfileMain(null)));
+  }
+
   @override
   Widget build(BuildContext context) {
     return _isSigningOut
@@ -109,17 +118,7 @@ class _GoogleSignOutButtonState extends State<GoogleSignOutButton> {
                 ),
               ),
             ),
-            onPressed: () async {
-              setState(() {
-                _isSigningOut = true;
-              });
-              await Authentication.signOut(context: context);
-              setState(() {
-                _isSigningOut = false;
-              });
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => ProfileMain(null)));
-            },
+            onPressed: _signOut,
             child: Padding(
               padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
               child: Text(

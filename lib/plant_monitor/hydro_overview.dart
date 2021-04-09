@@ -87,7 +87,9 @@ class SystemLayout {
         Positioned(
           left: pos[0] * scale - buttonSize * scale / 2 - buttonOffset,
           top: pos[1] * scale - buttonSize * scale / 2 - buttonOffset,
-          child: Utils.drawBorder(CellButton(i, buttonSize * scale)),
+          child: DrawBorder(
+            child: CellButton(i, buttonSize * scale),
+          ),
         ),
       );
     }
