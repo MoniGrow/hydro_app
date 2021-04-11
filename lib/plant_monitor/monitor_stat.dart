@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -32,9 +31,9 @@ class _MonitorStatState extends State<MonitorStat> {
         .collection(FirebaseConst.SENSOR_DATA_COLLECTION);
 
     return StreamBuilder<QuerySnapshot>(
-      // VERY IMPORTANT NOTE: the collection needs to have a composite index
-      // build on it in order to use orderBy, or else it just returns empty
-      // queries
+        // VERY IMPORTANT NOTE: the collection needs to have a composite index
+        // build on it in order to use orderBy, or else it just returns empty
+        // queries
         stream:
             data.orderBy("timestamp", descending: true).limit(1).snapshots(),
         builder: (context, snapshot) {
@@ -62,7 +61,9 @@ class _MonitorStatState extends State<MonitorStat> {
                     _mostRecent),
             onPressed: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => DetailedStats()));
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => DetailedStats(widget.fieldName)));
             },
           );
         });
