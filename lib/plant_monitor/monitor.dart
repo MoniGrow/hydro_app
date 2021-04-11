@@ -14,15 +14,21 @@ class Monitor extends StatefulWidget {
 }
 
 class _MonitorState extends State<Monitor> {
-  double _currTemperature;
-  double _currPh;
-
   @override
   Widget build(BuildContext context) {
+    Widget monitorBody;
     if (FirebaseAuth.instance.currentUser == null) {
-      return Scaffold(
-        body: Center(
-          child: Text("You are not logged in"),
+      monitorBody = Center(child: Text("You are not logged in"));
+    } else {
+      monitorBody = Container(
+        child: Column(
+          children: <Widget>[
+            Center(
+              child: HydroOverview(),
+            ),
+            MonitorStat("humidity"),
+            MonitorStat("temperature"),
+          ],
         ),
       );
     }
@@ -33,17 +39,7 @@ class _MonitorState extends State<Monitor> {
       drawer: Drawer(
         child: NavDrawer(ScreenPaths.monitor),
       ),
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            Center(
-              child: HydroOverview(),
-            ),
-            MonitorStat("humidity"),
-            MonitorStat("temperature"),
-          ],
-        ),
-      ),
+      body: monitorBody,
       bottomNavigationBar: NavBottom(ScreenPaths.monitor),
     );
   }

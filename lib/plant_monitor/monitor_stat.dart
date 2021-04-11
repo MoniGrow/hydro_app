@@ -21,26 +21,7 @@ class MonitorStat extends StatefulWidget {
 
 class _MonitorStatState extends State<MonitorStat> {
   Random rng = Random();
-  String _dataVal;
-  Timer _valueTimer;
   String _mostRecent;
-
-  _MonitorStatState();
-
-  @override
-  void initState() {
-    super.initState();
-
-    _dataVal = rng.nextInt(80).toString();
-    _valueTimer = Timer.periodic(
-      Duration(seconds: 1),
-      (timer) {
-        setState(() {
-          _dataVal = rng.nextInt(80).toString();
-        });
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +32,11 @@ class _MonitorStatState extends State<MonitorStat> {
         .collection(FirebaseConst.SENSOR_DATA_COLLECTION);
 
     return StreamBuilder<QuerySnapshot>(
-        stream: data.snapshots(),
+      // VERY IMPORTANT NOTE: the collection needs to have a composite index
+      // build on it in order to use orderBy, or else it just returns empty
+      // queries
+        stream:
+            data.orderBy("timestamp", descending: true).limit(1).snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text(
@@ -64,15 +49,12 @@ class _MonitorStatState extends State<MonitorStat> {
                 (widget.label == null ? widget.fieldName : widget.label) +
                     ": Loading...");
           }
-          // order_by on data snapshots for some reason makes every query
-          // fucking empty so we have to sort this shit like this
-          snapshot.data.docs.sort((a, b) {
-            Timestamp timeA = a.data()["timestamp"] as Timestamp;
-            Timestamp timeB = b.data()["timestamp"] as Timestamp;
-            return timeA.compareTo(timeB);
-          });
-          _mostRecent =
-              snapshot.data.docs.last.data()[widget.fieldName].toString();
+          if (snapshot.data.docs.isNotEmpty) {
+            _mostRecent =
+                snapshot.data.docs.first.data()[widget.fieldName].toString();
+          } else {
+            print("Query snapshot is empty, something went wrong");
+          }
           return TextButton(
             child: Text(
                 (widget.label == null ? widget.fieldName : widget.label) +
@@ -84,11 +66,5 @@ class _MonitorStatState extends State<MonitorStat> {
             },
           );
         });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _valueTimer.cancel();
   }
 }
