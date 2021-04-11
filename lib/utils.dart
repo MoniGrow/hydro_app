@@ -65,3 +65,8 @@ class Images {
   static const String plant_cilantro = "graphics/plants/cilantro.jpg";
   static const String plant_rosemary = "graphics/plants/rosemary.jpg";
 }
+
+class FirebaseConst {
+  static const String USER_COLLECTION = "ESP32data";
+  static const String SENSOR_DATA_COLLECTION = "sensorData";
+}

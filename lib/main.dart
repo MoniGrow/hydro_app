@@ -11,7 +11,7 @@ import 'package:hydro_app/pet_screen/pet_screen_main.dart';
 import 'package:hydro_app/pet_screen/pet_customize_main.dart';
 import 'package:hydro_app/profile_settings/profile_main.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(HydroApp());

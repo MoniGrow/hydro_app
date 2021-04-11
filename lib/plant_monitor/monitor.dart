@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:hydro_app/nav_drawer.dart';
 import 'package:hydro_app/nav_bottom.dart';
 import 'package:hydro_app/plant_monitor/monitor_stat.dart';
@@ -17,6 +19,13 @@ class _MonitorState extends State<Monitor> {
 
   @override
   Widget build(BuildContext context) {
+    if (FirebaseAuth.instance.currentUser == null) {
+      return Scaffold(
+        body: Center(
+          child: Text("You are not logged in"),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text("Plant monitor"),
@@ -30,9 +39,8 @@ class _MonitorState extends State<Monitor> {
             Center(
               child: HydroOverview(),
             ),
-            MonitorStat("light"),
+            MonitorStat("humidity"),
             MonitorStat("temperature"),
-            MonitorStat("pH"),
           ],
         ),
       ),
