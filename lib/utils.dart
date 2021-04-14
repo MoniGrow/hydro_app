@@ -56,6 +56,7 @@ class Images {
   static const String overview_1 = "graphics/overhead_view_basic.png";
   static const String qb = "graphics/qb.jpg";
   static const String profile_blank = "graphics/profile_blank.png";
+  static const String question_mark = "graphics/question_mark.png";
 
   static const String brain = "graphics/brain.jpg";
   static const String tree = "graphics/tree.jpeg";
@@ -69,4 +70,5 @@ class Images {
 class FirebaseConst {
   static const String USER_COLLECTION = "ESP32data";
   static const String SENSOR_DATA_COLLECTION = "sensorData";
+  static const String PLANT_DATA_COLLECTION = "grownPlants";
 }

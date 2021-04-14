@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hydro_app/plant_monitor/plant_editor.dart';
+
 import 'package:hydro_app/utils.dart';
 
 class CellPopupRoute extends PopupRoute {
@@ -26,10 +30,40 @@ class CellPopupRoute extends PopupRoute {
   Duration get transitionDuration => Duration();
 }
 
-class CellPopup extends StatelessWidget {
+class CellPopup extends StatefulWidget {
   final int cell;
 
   CellPopup(this.cell);
+
+  @override
+  _CellPopupState createState() => _CellPopupState();
+}
+
+class _CellPopupState extends State<CellPopup> {
+  Map<String, dynamic> plantData;
+
+  void retrievePlant() async {
+    // todo cache this probably maybe
+    String uid = FirebaseAuth.instance.currentUser.uid;
+    Query plants = FirebaseFirestore.instance
+        .collection(FirebaseConst.USER_COLLECTION)
+        .doc(uid)
+        .collection(FirebaseConst.PLANT_DATA_COLLECTION)
+        .where("cell_num", isEqualTo: widget.cell);
+
+    await plants.get().then((snapshot) {
+      if (snapshot.size == 0) return;
+      setState(() {
+        plantData = snapshot.docs.first.data();
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    retrievePlant();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,51 +77,73 @@ class CellPopup extends StatelessWidget {
         Container(
           margin: EdgeInsets.only(right: 10),
           child: OutlinedButton(
-            child: Text("Edit plant"),
-            onPressed: () =>
-                Navigator.pushNamed(context, ScreenPaths.plantEdit),
-          ),
+              child: Text("Edit plant"),
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => PlantEditor(plantData),
+                  ))),
         ),
       ],
     );
-    Widget popupBody = Container(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                margin: EdgeInsets.only(left: 15, top: 15),
-                width: 75,
-                height: 75,
-                child: Image(
-                  image: AssetImage(Images.plant_basil),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 45, top: 10),
-                child: Text(
-                  "Basil",
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
+    Widget popupBody;
+    if (plantData != null) {
+      popupBody = Container(
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(left: 15, top: 15),
+                  width: 75,
+                  height: 75,
+                  child: Image(
+                    image: plantData.containsKey("image_url")
+                        ? NetworkImage(plantData["image_url"])
+                        : AssetImage(Images.question_mark),
+                    fit: BoxFit.cover,
                   ),
                 ),
-              ),
-            ],
-          ),
-          Text("Cell $cell"),
-          Spacer(),
-          Text("Time planted: 11/23/2017 15:23:18"),
-          Spacer(),
-          Text("Age: 118 hours"),
-          Spacer(
-            flex: 3,
-          ),
-          buttonRow,
-        ],
-      ),
-    );
+                Container(
+                  margin: EdgeInsets.only(left: 45, top: 10),
+                  child: Text(
+                    plantData.containsKey("plant_name")
+                        ? plantData["plant_name"]
+                        : "Plant name missing",
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Text("Cell ${widget.cell}"),
+            Spacer(),
+            Text(plantData.containsKey("time_planted")
+                ? "Time planted: ${(plantData['time_planted'] as Timestamp).toDate().toString()}"
+                : "Time planted unknown"),
+            Spacer(),
+            Text("Age: idk yet"),
+            Spacer(
+              flex: 3,
+            ),
+            buttonRow,
+          ],
+        ),
+      );
+    } else {
+      popupBody = Center(
+        child: Column(
+          children: [
+            Spacer(),
+            Text("No plant stored yet"),
+            Spacer(),
+            buttonRow,
+          ],
+        ),
+      );
+    }
 
     return SafeArea(
       child: Container(

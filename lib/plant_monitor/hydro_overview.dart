@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hydro_app/plant_monitor/cell_popup.dart';
 
 import 'package:hydro_app/utils.dart';
+import 'package:hydro_app/plant_monitor/cell_popup.dart';
 
 class HydroOverview extends StatelessWidget {
   final SystemLayout layout = SystemLayout.basicLayout();
@@ -27,7 +27,7 @@ class HydroOverview extends StatelessWidget {
       decoration: overhead,
       child: Stack(
         alignment: Alignment.center,
-        children: [...layout.generateButtons(boxWidth / layout.width)],
+        children: layout.generateButtons(boxWidth / layout.width),
       ),
       margin: EdgeInsets.only(
         top: 10,
@@ -81,8 +81,8 @@ class SystemLayout {
     // this should not be needed, but it is
     int buttonOffset = 4;
     List<Widget> buttons = [];
-    for (int i = 0; i < positions.length; i++) {
-      List<double> pos = positions[i];
+    for (int i = 1; i <= positions.length; i++) {
+      List<double> pos = positions[i - 1];
       buttons.add(
         Positioned(
           left: pos[0] * scale - buttonSize * scale / 2 - buttonOffset,

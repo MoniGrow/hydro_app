@@ -25,7 +25,6 @@ class HydroApp extends StatelessWidget {
       routes: {
         ScreenPaths.home: (_) => TitlePage(),
         ScreenPaths.monitor: (_) => Monitor(),
-        ScreenPaths.plantEdit: (_) => PlantEditor(),
         ScreenPaths.pet: (_) => PetScreenMain(),
         ScreenPaths.pet_customize: (_) => PetCustomizeMain(),
         ScreenPaths.profile: (_) => ProfileMain(FirebaseAuth.instance.currentUser),
