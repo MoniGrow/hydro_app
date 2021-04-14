@@ -52,13 +52,15 @@ class _MonitorStatState extends State<MonitorStat> {
             _mostRecent =
                 snapshot.data.docs.first.data()[widget.fieldName].toString();
           } else {
-            print("Query snapshot is empty, something went wrong");
+            print("Query snapshot is empty");
           }
+          String statToPrint =
+              _mostRecent != null ? _mostRecent : "No data recorded";
           return TextButton(
             child: Text(
                 (widget.label == null ? widget.fieldName : widget.label) +
                     ": " +
-                    _mostRecent),
+                    statToPrint),
             onPressed: () {
               Navigator.push(
                   context,
