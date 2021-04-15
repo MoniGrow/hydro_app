@@ -21,7 +21,7 @@ platform :ios do
         build_app(
             scheme: "Runner",
             archive_path: "./build/Runner.xcarchive",
-            export_method: "development",
+            export_method: "ad-hoc",
             output_directory: "./build/Runner"
         )
         firebase_app_distribution(
