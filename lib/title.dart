@@ -23,7 +23,7 @@ class TitlePage extends StatelessWidget {
               child: ElevatedButton(
                 child: Text("Start"),
                 onPressed: () =>
-                    Navigator.popAndPushNamed(context, ScreenPaths.monitor),
+                    Navigator.popAndPushNamed(context, ScreenPaths.home),
               ),
             ),
             Spacer(flex: 3)

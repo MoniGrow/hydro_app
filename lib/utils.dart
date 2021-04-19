@@ -40,15 +40,9 @@ class DrawBorder extends StatelessWidget {
 }
 
 class ScreenPaths {
-  static const String home = "/";
-
-  static const String monitor = "/monitor";
-  static const String plantEdit = monitor + "/edit";
-
-  static const String pet = "/pet";
-  static const String pet_customize = pet + "/customize";
-
-  static const String profile = "/profile";
+  static const String title = "/";
+  static const String home = "/home";
+  static const String plantEdit = "/edit";
 }
 
 class Images {

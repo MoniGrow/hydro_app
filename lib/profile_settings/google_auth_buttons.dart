@@ -8,6 +8,10 @@ import 'package:hydro_app/profile_settings/profile_main.dart';
 /// Google sign-in button
 /// Displays a loading icon while signing in.
 class GoogleSignInButton extends StatefulWidget {
+  final ProfileMainState parent;
+
+  GoogleSignInButton(this.parent);
+
   @override
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
 }
@@ -27,8 +31,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
     });
 
     if (user != null) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => ProfileMain(user)));
+      widget.parent.updateUser();
     }
 
     setState(() {
@@ -82,6 +85,10 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
 /// Google sign-out button
 /// Displays a loading icon while signing out.
 class GoogleSignOutButton extends StatefulWidget {
+  final ProfileMainState parent;
+
+  GoogleSignOutButton(this.parent);
+
   @override
   _GoogleSignOutButtonState createState() => _GoogleSignOutButtonState();
 }
@@ -97,8 +104,7 @@ class _GoogleSignOutButtonState extends State<GoogleSignOutButton> {
     setState(() {
       _isSigningOut = false;
     });
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => ProfileMain(null)));
+    widget.parent.updateUser();
   }
 
   @override
