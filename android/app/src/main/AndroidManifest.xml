@@ -14,6 +14,9 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/stat_display_widget_info" />
         </receiver>
+        <service
+            android:name="WidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
         <activity
             android:name=".MainActivity"
