@@ -23,4 +23,11 @@
         android:textSize="12sp"
         android:textStyle="bold|italic" />
 
+    <Button
+        android:id="@+id/app_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="#00FFFFFF" />
+
 </RelativeLayout>
