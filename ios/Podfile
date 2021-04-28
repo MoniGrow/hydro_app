@@ -39,3 +39,10 @@ post_install do |installer|
     flutter_additional_ios_build_settings(target)
   end
 end
+
+target 'StatDisplayWidgetExtension' do
+  use_frameworks!
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Firestore'
+end

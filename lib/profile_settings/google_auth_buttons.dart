@@ -32,7 +32,8 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
           context, MaterialPageRoute(builder: (context) => ProfileMain(user)));
       HomeWidget.updateWidget(
         name: "StatDisplayWidget",
-        androidName: "StatDisplayWidget"
+        androidName: "StatDisplayWidget",
+        iOSName: "StatDisplayWidget"
       );
     }
 
@@ -106,7 +107,8 @@ class _GoogleSignOutButtonState extends State<GoogleSignOutButton> {
         context, MaterialPageRoute(builder: (context) => ProfileMain(null)));
     HomeWidget.updateWidget(
         name: "StatDisplayWidget",
-        androidName: "StatDisplayWidget"
+        androidName: "StatDisplayWidget",
+        iOSName: "StatDisplayWidget"
     );
   }
 
