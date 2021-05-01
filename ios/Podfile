@@ -1,6 +1,13 @@
 # Uncomment this line to define a global platform for your project
 platform :ios, '10.0'
 
+target 'StatDisplayWidgetExtension' do
+  use_frameworks!
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Firestore'
+end
+
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
@@ -38,11 +45,4 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
   end
-end
-
-target 'StatDisplayWidgetExtension' do
-  use_frameworks!
-  pod 'Firebase/Analytics'
-  pod 'Firebase/Auth'
-  pod 'Firebase/Firestore'
 end

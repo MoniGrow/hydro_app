@@ -11,33 +11,71 @@ import Intents
 import Firebase
 
 struct Provider: IntentTimelineProvider {
-    func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), configuration: ConfigurationIntent())
+    func placeholder(in context: Context) -> DataEntry {
+        DataEntry(date: Date(), dataType: "temperature", data: "", configuration: ConfigurationIntent())
     }
 
-    func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), configuration: configuration)
-        completion(entry)
+    func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (DataEntry) -> ()) {
+        let db = Firestore.firestore()
+        let user = Auth.auth().currentUser
+        if user != nil {
+            let dataCollection = db.collection("ESP32data").document(user!.uid).collection("sensorData")
+            dataCollection.order(by: "timestamp", descending: true).limit(to: 1).getDocuments() { (querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                } else {
+                    if querySnapshot!.count > 0 {
+                        let document = querySnapshot!.documents.first
+                        let entry = DataEntry(date: Date(), dataType: "temperature", data: String(describing: document!.data()["temperature"]), configuration: configuration)
+                        completion(entry)
+                    }
+                }
+            }
+        } else {
+            let entry = DataEntry(date: Date(), dataType: "null", data: "null", configuration: configuration)
+            completion(entry)
+            print("No user signed in on device")
+        }
     }
 
     func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        var entries: [SimpleEntry] = []
-
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-        let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, configuration: configuration)
-            entries.append(entry)
+        let nextUpdateDate = Calendar.current.date(byAdding: .minute, value: 30, to: Date())!
+        let db = Firestore.firestore()
+        let user = Auth.auth().currentUser
+        if user != nil {
+            let dataCollection = db.collection("ESP32data").document(user!.uid).collection("sensorData")
+            dataCollection.order(by: "timestamp", descending: true).limit(to: 1).getDocuments() { (querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                } else {
+                    if querySnapshot!.count > 0 {
+                        let document = querySnapshot!.documents.first
+                        let entry = DataEntry(date: Date(), dataType: "temperature", data: String(describing: document!.data()["temperature"]), configuration: configuration)
+                        let timeline = Timeline(
+                                    entries:[entry],
+                                    policy: .after(nextUpdateDate)
+                                )
+                        completion(timeline)
+                    }
+                }
+            }
+        } else {
+            let entry = DataEntry(date: Date(), dataType: "null", data: "null", configuration: configuration)
+            let timeline = Timeline(
+                        entries:[entry],
+                        policy: .after(nextUpdateDate)
+                    )
+            completion(timeline)
+            print("No user signed in on device")
         }
-
-        let timeline = Timeline(entries: entries, policy: .atEnd)
-        completion(timeline)
     }
 }
 
-struct SimpleEntry: TimelineEntry {
-    let date: Date
+struct DataEntry: TimelineEntry {
+    var date: Date
+    
+    let dataType: String
+    let data: String
     let configuration: ConfigurationIntent
 }
 
@@ -45,7 +83,7 @@ struct StatDisplayWidgetEntryView : View {
     var entry: Provider.Entry
 
     var body: some View {
-        Text(entry.date, style: .time)
+        Text("\(entry.dataType): \(entry.data)")
     }
 }
 
@@ -54,7 +92,7 @@ struct StatDisplayWidget: Widget {
     let kind: String = "StatDisplayWidget"
 
     init() {
-//        FirebaseApp.configure()
+        FirebaseApp.configure()
     }
     
     var body: some WidgetConfiguration {
@@ -68,7 +106,7 @@ struct StatDisplayWidget: Widget {
 
 struct StatDisplayWidget_Previews: PreviewProvider {
     static var previews: some View {
-        StatDisplayWidgetEntryView(entry: SimpleEntry(date: Date(), configuration: ConfigurationIntent()))
+        StatDisplayWidgetEntryView(entry: DataEntry(date: Date(), dataType: "temperature", data: "1", configuration: ConfigurationIntent()))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }
