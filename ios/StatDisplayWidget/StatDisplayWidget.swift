@@ -5,68 +5,78 @@
 //  Created by jerry on 4/27/21.
 //
 
+import os
 import WidgetKit
 import SwiftUI
 import Intents
 import Firebase
 
 struct Provider: IntentTimelineProvider {
+    var currentUserUid: String
+    var currentDataType: String
+    
     func placeholder(in context: Context) -> DataEntry {
-        DataEntry(date: Date(), dataType: "temperature", data: "", configuration: ConfigurationIntent())
+        DataEntry(date: Date(), dataType: currentDataType, data: "", configuration: ConfigurationIntent())
     }
 
     func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (DataEntry) -> ()) {
-        let db = Firestore.firestore()
-        let user = Auth.auth().currentUser
-        if user != nil {
-            let dataCollection = db.collection("ESP32data").document(user!.uid).collection("sensorData")
+        if currentUserUid != "" {
+            var currentData: String = "null"
+            let db = Firestore.firestore()
+            let dataCollection = db.collection("ESP32data").document(currentUserUid).collection("sensorData")
             dataCollection.order(by: "timestamp", descending: true).limit(to: 1).getDocuments() { (querySnapshot, err) in
                 if let err = err {
                     print("Error getting documents: \(err)")
+                    os_log("Error getting documents: \(String(describing: err))")
                 } else {
                     if querySnapshot!.count > 0 {
                         let document = querySnapshot!.documents.first
-                        let entry = DataEntry(date: Date(), dataType: "temperature", data: String(describing: document!.data()["temperature"]), configuration: configuration)
-                        completion(entry)
+                        currentData = String(describing: document!.data()[currentDataType])
                     }
                 }
+                let entry = DataEntry(date: Date(), dataType: currentDataType, data: currentData, configuration: configuration)
+                completion(entry)
             }
         } else {
-            let entry = DataEntry(date: Date(), dataType: "null", data: "null", configuration: configuration)
-            completion(entry)
+            let entry = DataEntry(date: Date(), dataType: "null", data: "no user", configuration: configuration)
             print("No user signed in on device")
+            os_log("No user signed in on device")
+            completion(entry)
         }
     }
 
     func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         let nextUpdateDate = Calendar.current.date(byAdding: .minute, value: 30, to: Date())!
-        let db = Firestore.firestore()
-        let user = Auth.auth().currentUser
-        if user != nil {
-            let dataCollection = db.collection("ESP32data").document(user!.uid).collection("sensorData")
+        if currentUserUid != "" {
+            var currentData: String = "null"
+            let db = Firestore.firestore()
+            let dataCollection = db.collection("ESP32data").document(currentUserUid).collection("sensorData")
             dataCollection.order(by: "timestamp", descending: true).limit(to: 1).getDocuments() { (querySnapshot, err) in
                 if let err = err {
                     print("Error getting documents: \(err)")
+                    os_log("Error getting documents: \(String(describing: err))")
                 } else {
                     if querySnapshot!.count > 0 {
                         let document = querySnapshot!.documents.first
-                        let entry = DataEntry(date: Date(), dataType: "temperature", data: String(describing: document!.data()["temperature"]), configuration: configuration)
-                        let timeline = Timeline(
-                                    entries:[entry],
-                                    policy: .after(nextUpdateDate)
-                                )
-                        completion(timeline)
+                        currentData = String(describing: document!.data()[currentDataType])
                     }
                 }
+                let entry = DataEntry(date: Date(), dataType: currentDataType, data: currentData, configuration: configuration)
+                let timeline = Timeline(
+                            entries:[entry],
+                            policy: .after(nextUpdateDate)
+                        )
+                completion(timeline)
             }
         } else {
-            let entry = DataEntry(date: Date(), dataType: "null", data: "null", configuration: configuration)
+            let entry = DataEntry(date: Date(), dataType: "null", data: "no user", configuration: configuration)
             let timeline = Timeline(
                         entries:[entry],
                         policy: .after(nextUpdateDate)
                     )
-            completion(timeline)
             print("No user signed in on device")
+            os_log("No user signed in on device")
+            completion(timeline)
         }
     }
 }
@@ -90,13 +100,15 @@ struct StatDisplayWidgetEntryView : View {
 @main
 struct StatDisplayWidget: Widget {
     let kind: String = "StatDisplayWidget"
+    let uid = UserDefaults.standard.string(forKey: "uid") == nil ? "" : UserDefaults.standard.string(forKey: "uid")
 
     init() {
         FirebaseApp.configure()
+        print("is this thing on? printing? init StatDisplayWidget")
     }
     
     var body: some WidgetConfiguration {
-        IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
+        IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider(currentUserUid: uid!, currentDataType: "temperature")) { entry in
             StatDisplayWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("My Widget")
