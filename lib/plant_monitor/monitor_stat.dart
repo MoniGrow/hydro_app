@@ -24,6 +24,7 @@ class _MonitorStatState extends State<MonitorStat> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     String uid = FirebaseAuth.instance.currentUser.uid;
     CollectionReference data = FirebaseFirestore.instance
         .collection(FirebaseConst.USER_COLLECTION)
@@ -56,7 +57,7 @@ class _MonitorStatState extends State<MonitorStat> {
           }
           String statToPrint =
               _mostRecent != null ? _mostRecent : "No data recorded";
-          return TextButton(
+          Widget oldTextButton = TextButton(
             child: Text(
                 (widget.label == null ? widget.fieldName : widget.label) +
                     ": " +
@@ -67,6 +68,27 @@ class _MonitorStatState extends State<MonitorStat> {
                   MaterialPageRoute(
                       builder: (_) => DetailedStats(widget.fieldName)));
             },
+          );
+          Widget button = ElevatedButton(
+            child: Row(
+              children: [
+                Text(widget.label == null ? widget.fieldName : widget.label),
+                Spacer(),
+                Text(statToPrint),
+              ],
+            ),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => DetailedStats(widget.fieldName)));
+            },
+          );
+          return Container(
+            margin: EdgeInsets.symmetric(vertical: 10),
+            width: width * 0.9,
+            height: 60,
+            child: button,
           );
         });
   }

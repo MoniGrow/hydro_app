@@ -48,13 +48,10 @@ class ScreenPaths {
 class Images {
   static const String cat = "graphics/CAT_IDEA_ROUGH_2_CROPPED.png";
   static const String overview_1 = "graphics/overhead_view_basic.png";
+  static const String overview_proto_1 = "graphics/overhead_view_prototype.png";
   static const String qb = "graphics/qb.jpg";
   static const String profile_blank = "graphics/profile_blank.png";
   static const String question_mark = "graphics/question_mark.png";
-
-  static const String brain = "graphics/brain.jpg";
-  static const String tree = "graphics/tree.jpeg";
-  static const String shopfront = "graphics/shopfront.jpg";
 
   static const String plant_basil = "graphics/plants/basil.jpg";
   static const String plant_cilantro = "graphics/plants/cilantro.jpg";
