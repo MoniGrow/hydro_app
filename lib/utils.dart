@@ -11,6 +11,13 @@ class Utils {
     }
     return mesh;
   }
+
+  static bool isNumeric(String s) {
+    if (s == null) {
+      return false;
+    }
+    return double.tryParse(s) != null;
+  }
 }
 
 /// Utility widget to draw a border around some child (for debugging).
@@ -53,9 +60,8 @@ class Images {
   static const String profile_blank = "graphics/profile_blank.png";
   static const String question_mark = "graphics/question_mark.png";
 
-  static const String plant_basil = "graphics/plants/basil.jpg";
-  static const String plant_cilantro = "graphics/plants/cilantro.jpg";
-  static const String plant_rosemary = "graphics/plants/rosemary.jpg";
+  static const String icon_temperature = "graphics/stat_icons/temperature.png";
+  static const String icon_waterlevel = "graphics/stat_icons/waterlevel.png";
 }
 
 class FirebaseConst {

@@ -4,14 +4,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
+import 'package:hydro_app/plant_monitor/monitor_utils.dart';
 import 'package:hydro_app/utils.dart';
 
 class DetailedStats extends StatefulWidget {
-  final String fieldName;
+  final StatType statType;
   final int maxDataPoints;
+
   // TODO: also limit data by how recent the data is
 
-  DetailedStats(this.fieldName, {this.maxDataPoints = 50});
+  DetailedStats(this.statType, {this.maxDataPoints = 50});
 
   @override
   _DetailedStatsState createState() => _DetailedStatsState();
@@ -47,11 +49,21 @@ class _DetailedStatsState extends State<DetailedStats> {
               // Currently this is the only way I found to forcibly update the
               // graph state.
               if (snapshot.data.docs.isNotEmpty) {
-                dataPoints = snapshot.data.docs.map((e) {
-                  return TimeSeriesStat(
-                      (e.data()["timestamp"] as Timestamp).toDate(),
-                      (e.data()[widget.fieldName] as int).toDouble());
-                }).toList();
+                print(snapshot.data.docs.length);
+                dataPoints = [];
+                for (QueryDocumentSnapshot point in snapshot.data.docs) {
+                  if (point.data()[widget.statType.fieldName] != null) {
+                    // assumed to be numeric
+                    // todo what if it string or categorical?
+                    dynamic stat = point.data()[widget.statType.fieldName];
+                    if (stat is int) {
+                      stat = (stat as int).toDouble();
+                    }
+                    dataPoints.add(TimeSeriesStat(
+                        (point.data()["timestamp"] as Timestamp).toDate(),
+                        stat));
+                  }
+                }
               }
             }
             _constructSeries();
@@ -66,7 +78,7 @@ class _DetailedStatsState extends State<DetailedStats> {
                     dateTimeFactory: const charts.LocalDateTimeFactory(),
                   ),
                 ),
-                Text("hello"),
+                Text(widget.statType.label),
                 Expanded(
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
@@ -79,14 +91,16 @@ class _DetailedStatsState extends State<DetailedStats> {
                           label: Text("Data type"),
                         ),
                       ],
-                      rows: [
-                        ...dataPoints.map((d) => DataRow(
+                      rows: dataPoints
+                          .map(
+                            (d) => DataRow(
                               cells: [
                                 DataCell(Text(d.time.toString())),
                                 DataCell(Text(d.stat.toString())),
                               ],
-                            )),
-                      ],
+                            ),
+                          )
+                          .toList(),
                     ),
                   ),
                 ),
