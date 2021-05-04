@@ -24,4 +24,12 @@ class StatType {
     iconPath = Images.icon_waterlevel;
     unit = "in";
   }
+
+  StatType.humidity() {
+    fieldName = "humidity";
+    label = "Humidity";
+    bgColor = Colors.blue[300];
+    iconPath = Images.icon_humidity;
+    unit = "%rh";
+  }
 }

@@ -47,8 +47,8 @@ class DrawBorder extends StatelessWidget {
 }
 
 class ScreenPaths {
-  static const String title = "/";
-  static const String home = "/home";
+  // static const String title = "/";
+  static const String home = "/";
   static const String plantEdit = "/edit";
 }
 
@@ -62,6 +62,7 @@ class Images {
 
   static const String icon_temperature = "graphics/stat_icons/temperature.png";
   static const String icon_waterlevel = "graphics/stat_icons/waterlevel.png";
+  static const String icon_humidity = "graphics/stat_icons/humidity.png";
 }
 
 class FirebaseConst {

@@ -21,47 +21,39 @@ class _MonitorState extends State<Monitor> {
     }
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
-          stops: [
-            0.8,
-            1,
-          ],
-          colors: [
-            Colors.blue[50],
-            Colors.lightBlue[100],
-          ],
-        ),
+        color: Colors.green[400],
       ),
-      child: Column(
-        children: <Widget>[
-          Container(
-            alignment: Alignment.bottomLeft,
-            margin: EdgeInsets.only(top: 10, left: 15, bottom: 10),
-            child: Text(
-              "Plant Monitor",
-              style: TextStyle(
-                color: Colors.grey[850],
-                fontWeight: FontWeight.w600,
-                fontSize: 30,
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.bottomLeft,
+              margin: EdgeInsets.only(top: 10, left: 15, bottom: 10),
+              child: Text(
+                "Plant Monitor",
+                style: TextStyle(
+                  color: Colors.grey[850],
+                  fontWeight: FontWeight.w600,
+                  fontSize: 30,
+                ),
               ),
             ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            width: width * 0.9,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              border: Border.all(width: 2),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              width: width * 0.9,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                border: Border.all(width: 2),
+              ),
+              alignment: Alignment.center,
+              child: HydroOverview(),
             ),
-            alignment: Alignment.center,
-            child: HydroOverview(),
-          ),
-          Container(height: 50),
-          MonitorStat(StatType.waterlevel()),
-          MonitorStat(StatType.temperature()),
-        ],
+            Container(height: 40),
+            MonitorStat(StatType.waterlevel()),
+            MonitorStat(StatType.humidity()),
+            MonitorStat(StatType.temperature()),
+          ],
+        ),
       ),
     );
   }

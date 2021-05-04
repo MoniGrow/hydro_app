@@ -59,7 +59,7 @@ class SystemLayout {
 
   SystemLayout.basicLayout() {
     path = Images.overview_1;
-    buttonOffsets = 3;
+    buttonOffsets = 0;
     width = 778;
     height = 564;
     buttonSize = 110;
@@ -70,7 +70,7 @@ class SystemLayout {
 
   SystemLayout.prototypeLayout() {
     path = Images.overview_proto_1;
-    buttonOffsets = 2;
+    buttonOffsets = 0;
     width = 1018;
     height = 409;
     buttonSize = 140;
@@ -93,9 +93,7 @@ class SystemLayout {
         Positioned(
           left: pos[0] * scale - buttonSize * scale / 2 - buttonOffsets,
           top: pos[1] * scale - buttonSize * scale / 2 - buttonOffsets,
-          child: DrawBorder(
-            child: CellButton(i, buttonSize * scale),
-          ),
+          child: CellButton(i, buttonSize * scale),
         ),
       );
     }
