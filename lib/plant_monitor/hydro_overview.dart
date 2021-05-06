@@ -42,7 +42,10 @@ class CellButton extends StatelessWidget {
       height: size,
       child: IconButton(
         padding: EdgeInsets.all(0),
-        icon: Icon(Icons.circle),
+        icon: Icon(
+          Icons.circle,
+          color: Colors.grey[800],
+        ),
         onPressed: () => Navigator.push(context, CellPopupRoute(cell)),
       ),
     );

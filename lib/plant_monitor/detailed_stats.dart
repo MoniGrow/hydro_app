@@ -33,7 +33,12 @@ class _DetailedStatsState extends State<DetailedStats> {
         .collection(FirebaseConst.SENSOR_DATA_COLLECTION);
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text(
+          widget.statType.label,
+          style: Theme.of(context).textTheme.headline5,
+        ),
+      ),
       body: StreamBuilder<QuerySnapshot>(
           stream: data
               .orderBy("timestamp", descending: true)

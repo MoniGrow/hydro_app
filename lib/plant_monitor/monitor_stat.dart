@@ -78,7 +78,7 @@ class _MonitorStatState extends State<MonitorStat> {
                 Text(
                   widget.statType.label,
                   style: TextStyle(
-                    color: Colors.grey[850],
+                    color: Colors.black,
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
@@ -87,7 +87,7 @@ class _MonitorStatState extends State<MonitorStat> {
                 Text(
                   "$statToPrint ${widget.statType.unit}",
                   style: TextStyle(
-                    color: Colors.grey[800],
+                    color: Colors.grey[850],
                     fontSize: 16,
                   ),
                 ),

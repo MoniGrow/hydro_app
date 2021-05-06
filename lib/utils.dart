@@ -63,6 +63,7 @@ class Images {
   static const String icon_temperature = "graphics/stat_icons/temperature.png";
   static const String icon_waterlevel = "graphics/stat_icons/waterlevel.png";
   static const String icon_humidity = "graphics/stat_icons/humidity.png";
+  static const String icon_plant = "graphics/stat_icons/plant.png";
 }
 
 class FirebaseConst {

@@ -21,12 +21,27 @@ class HydroApp extends StatelessWidget {
     ]);
     return MaterialApp(
       title: "Basil tastes good",
+      theme: ThemeData(
+        primaryColor: Colors.green[400],
+        scaffoldBackgroundColor: Colors.green[200],
+        textTheme: TextTheme(
+          headline4: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 32,
+            fontFamily: "Nunito",
+          ),
+          headline5: TextStyle(
+            color: Colors.grey[900],
+            fontWeight: FontWeight.w600,
+            fontSize: 24,
+            fontFamily: "Nunito",
+          ),
+        ),
+      ),
       routes: {
         ScreenPaths.home: (_) => Home(),
       },
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
     );
   }
 }

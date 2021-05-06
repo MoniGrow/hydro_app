@@ -21,34 +21,24 @@ class _MonitorState extends State<Monitor> {
     }
     return Container(
       decoration: BoxDecoration(
-        color: Colors.green[400],
+        // color: Colors.green[300],
       ),
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             Container(
-              alignment: Alignment.bottomLeft,
-              margin: EdgeInsets.only(top: 10, left: 15, bottom: 10),
-              child: Text(
-                "Plant Monitor",
-                style: TextStyle(
-                  color: Colors.grey[850],
-                  fontWeight: FontWeight.w600,
-                  fontSize: 30,
-                ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 20),
+              margin: EdgeInsets.only(top: 20),
+              padding: EdgeInsets.symmetric(vertical: 15),
               width: width * 0.9,
               decoration: BoxDecoration(
+                // color: Colors.teal[200],
                 borderRadius: BorderRadius.all(Radius.circular(10)),
-                border: Border.all(width: 2),
+                // border: Border.all(width: 1),
               ),
               alignment: Alignment.center,
               child: HydroOverview(),
             ),
-            Container(height: 40),
+            Container(height: 20),
             MonitorStat(StatType.waterlevel()),
             MonitorStat(StatType.humidity()),
             MonitorStat(StatType.temperature()),

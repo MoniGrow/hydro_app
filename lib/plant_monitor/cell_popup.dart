@@ -97,7 +97,8 @@ class _CellPopupState extends State<CellPopup> {
                   margin: EdgeInsets.only(left: 15, top: 15),
                   width: 75,
                   height: 75,
-                  child: Image(
+                  child: FadeInImage(
+                    placeholder: AssetImage(Images.question_mark),
                     image: plantData.containsKey("image_url")
                         ? NetworkImage(plantData["image_url"])
                         : AssetImage(Images.question_mark),
