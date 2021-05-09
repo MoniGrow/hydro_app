@@ -6,6 +6,7 @@ import 'package:hydro_app/plant_monitor/monitor_utils.dart';
 import 'package:hydro_app/plant_monitor/monitor_stat.dart';
 import 'package:hydro_app/plant_monitor/hydro_overview.dart';
 import 'package:hydro_app/utils.dart';
+import 'monitor_stat_rtdb.dart';
 
 class Monitor extends StatefulWidget {
   @override
@@ -39,9 +40,11 @@ class _MonitorState extends State<Monitor> {
               child: HydroOverview(),
             ),
             Container(height: 20),
-            MonitorStat(StatType.waterlevel()),
-            MonitorStat(StatType.humidity()),
-            MonitorStat(StatType.temperature()),
+            // TODO very bad triple query, change soon
+            // (or just restructure the data)
+            MonitorStatRTDB(StatType.waterlevel()),
+            MonitorStatRTDB(StatType.humidity()),
+            MonitorStatRTDB(StatType.temperature()),
           ],
         ),
       ),

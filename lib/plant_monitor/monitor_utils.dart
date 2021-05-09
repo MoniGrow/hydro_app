@@ -18,7 +18,7 @@ class StatType {
   }
 
   StatType.waterlevel() {
-    fieldName = "waterlevel";
+    fieldName = "water_level";
     label = "Water Level";
     bgColor = Colors.blue[100];
     iconPath = Images.icon_waterlevel;
