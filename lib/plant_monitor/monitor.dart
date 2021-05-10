@@ -23,6 +23,16 @@ class _MonitorState extends State<Monitor> {
     return Container(
       decoration: BoxDecoration(
         // color: Colors.green[300],
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Theme.of(context).scaffoldBackgroundColor,
+            // Colors.white,
+            Theme.of(context).scaffoldBackgroundColor,
+          ],
+          stops: [0.3, 1],
+        ),
       ),
       child: SingleChildScrollView(
         child: Column(

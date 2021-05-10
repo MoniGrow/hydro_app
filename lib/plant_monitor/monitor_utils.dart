@@ -28,7 +28,7 @@ class StatType {
   StatType.humidity() {
     fieldName = "humidity";
     label = "Humidity";
-    bgColor = Colors.blue[300];
+    bgColor = Colors.blue[200];
     iconPath = Images.icon_humidity;
     unit = "%rh";
   }

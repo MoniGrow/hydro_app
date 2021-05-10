@@ -93,6 +93,8 @@ class _CellPopupStateRTDB extends State<CellPopupRTDB> {
     );
     Widget popupBody;
     if (plantData != null) {
+      DateTime timePlanted =
+          Utils.dateTimeFromSeconds(plantData["time_planted"]);
       popupBody = Container(
         child: Column(
           children: [
@@ -129,10 +131,10 @@ class _CellPopupStateRTDB extends State<CellPopupRTDB> {
             Text("Cell ${widget.cell}"),
             Spacer(),
             Text(plantData.containsKey("time_planted")
-                ? "Time planted: ${Utils.dateTimeFromSeconds(plantData["time_planted"])}"
+                ? "Time planted: $timePlanted"
                 : "Time planted unknown"),
             Spacer(),
-            Text("Age: idk yet"),
+            Text("Age: ${DateTime.now().difference(timePlanted).inDays} days"),
             Spacer(
               flex: 3,
             ),
