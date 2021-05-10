@@ -7,13 +7,15 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:hydro_app/plant_monitor/monitor_utils.dart';
 import 'package:hydro_app/utils.dart';
 
+import 'detailed_stats_all.dart';
+
 class DetailedStats extends StatefulWidget {
   final StatType statType;
   final int maxDataPoints;
+  final double recentSecondsLimit;
 
-  // TODO: also limit data by how recent the data is
-
-  DetailedStats(this.statType, {this.maxDataPoints = 50});
+  DetailedStats(this.statType,
+      {this.maxDataPoints = 25, this.recentSecondsLimit = 43200});
 
   @override
   _DetailedStatsState createState() => _DetailedStatsState();
@@ -34,13 +36,15 @@ class _DetailedStatsState extends State<DetailedStats> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.statType.label,
+          "${widget.statType.label}: 12 hour log",
           style: Theme.of(context).textTheme.headline5,
         ),
       ),
       body: StreamBuilder<Event>(
           stream: ref
               .orderByChild("timestamp")
+              .startAt(DateTime.now().millisecondsSinceEpoch.toDouble() / 1000 -
+                  widget.recentSecondsLimit)
               .limitToLast(widget.maxDataPoints)
               .onValue,
           builder: (context, event) {
@@ -52,7 +56,7 @@ class _DetailedStatsState extends State<DetailedStats> {
               // completely replaced, and the series is completely rebuilt.
               // Currently this is the only way I found to forcibly update the
               // graph state.
-              if (event.hasData) {
+              if (event.hasData && event.data.snapshot.value != null) {
                 dataPoints = [];
                 Map<String, dynamic> data =
                     Map<String, dynamic>.from(event.data.snapshot.value);
@@ -87,25 +91,40 @@ class _DetailedStatsState extends State<DetailedStats> {
                 Expanded(
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
-                    child: DataTable(
-                      columns: [
-                        DataColumn(
-                          label: Text("Time"),
+                    child: Column(
+                      children: [
+                        DataTable(
+                          columns: [
+                            DataColumn(
+                              label: Text("Time"),
+                            ),
+                            DataColumn(
+                              label: Text(widget.statType.label),
+                            ),
+                          ],
+                          rows: dataPoints
+                              .map(
+                                (d) => DataRow(
+                                  cells: [
+                                    DataCell(Text(d.time.toString())),
+                                    DataCell(Text(d.stat.toString())),
+                                  ],
+                                ),
+                              )
+                              .toList(),
                         ),
-                        DataColumn(
-                          label: Text("Data type"),
+                        dataPoints.isEmpty
+                            ? Text("No data recorded in the last 12 hours")
+                            : Container(),
+                        ElevatedButton(
+                          child: Text("View all past data"),
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => DetailedStatsAll(widget.statType),
+                              )),
                         ),
                       ],
-                      rows: dataPoints
-                          .map(
-                            (d) => DataRow(
-                              cells: [
-                                DataCell(Text(d.time.toString())),
-                                DataCell(Text(d.stat.toString())),
-                              ],
-                            ),
-                          )
-                          .toList(),
                     ),
                   ),
                 ),
@@ -126,12 +145,4 @@ class _DetailedStatsState extends State<DetailedStats> {
       ),
     ];
   }
-}
-
-/// Sample time series data type.
-class TimeSeriesStat {
-  final DateTime time;
-  final double stat;
-
-  TimeSeriesStat(this.time, this.stat);
 }

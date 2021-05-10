@@ -41,6 +41,7 @@ class CellPopup extends StatefulWidget {
 
 class _CellPopupState extends State<CellPopup> {
   Map<String, dynamic> plantData;
+  bool _loading = true;
 
   void retrievePlant() async {
     String uid = FirebaseAuth.instance.currentUser.uid;
@@ -58,7 +59,12 @@ class _CellPopupState extends State<CellPopup> {
         Map<String, dynamic>.from(snapshot.value).forEach((key, value) {
           setState(() {
             plantData = Map<String, dynamic>.from(value);
+            _loading = false;
           });
+        });
+      } else {
+        setState(() {
+          _loading = false;
         });
       }
     });
@@ -142,12 +148,23 @@ class _CellPopupState extends State<CellPopup> {
           ],
         ),
       );
-    } else {
+    } else if (plantData == null && !_loading) {
       popupBody = Center(
         child: Column(
           children: [
             Spacer(),
             Text("Cell ${widget.cell}: No plant stored yet"),
+            Spacer(),
+            buttonRow,
+          ],
+        ),
+      );
+    } else {
+      popupBody = Center(
+        child: Column(
+          children: [
+            Spacer(),
+            Text("Loading..."),
             Spacer(),
             buttonRow,
           ],

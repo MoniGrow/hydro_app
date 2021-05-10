@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:hydro_app/utils.dart';
 
 class StatType {
+  /// The name of the field/key corresponding to this data type
   String fieldName;
+  /// How you would actually write this type of data in english
   String label;
   Color bgColor;
   String iconPath;
@@ -32,4 +34,12 @@ class StatType {
     iconPath = Images.icon_humidity;
     unit = "%rh";
   }
+}
+
+/// Sample time series data type.
+class TimeSeriesStat {
+  final DateTime time;
+  final double stat;
+
+  TimeSeriesStat(this.time, this.stat);
 }
