@@ -22,20 +22,20 @@ class HydroApp extends StatelessWidget {
     return MaterialApp(
       title: "Basil tastes good",
       theme: ThemeData(
-        primaryColor: Colors.green[400],
+        primaryColor: Colors.green[300],
         scaffoldBackgroundColor: Colors.green[200],
         textTheme: TextTheme(
           headline4: TextStyle(
             color: Colors.black,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w400,
             fontSize: 32,
-            fontFamily: "Nunito",
+            // fontFamily: "Nunito",
           ),
           headline5: TextStyle(
             color: Colors.grey[900],
             fontWeight: FontWeight.w600,
             fontSize: 24,
-            fontFamily: "Nunito",
+            // fontFamily: "Nunito",
           ),
         ),
       ),

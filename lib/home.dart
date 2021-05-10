@@ -21,16 +21,7 @@ class _HomeState extends State<Home> {
 
   Widget _getWidgetAppBar(BuildContext context, int index) {
     return [
-      AppBar(
-        title: Container(
-          alignment: Alignment.bottomLeft,
-          margin: EdgeInsets.only(top: 10, left: 15, bottom: 10),
-          child: Text(
-            "Plant Monitor",
-            style: Theme.of(context).textTheme.headline4,
-          ),
-        ),
-      ),
+      null,
       null,
       null
     ][index];
@@ -49,12 +40,15 @@ class _HomeState extends State<Home> {
     // bottom nav bar is probably same height
     double barHeight = AppBar().preferredSize.height;
     Color activeIconColor = Colors.green;
+    Widget appBar = _getWidgetAppBar(context, _selectedIndex);
+    double bodyHeight = height - topHeight - barHeight;
+    bodyHeight = appBar == null ? bodyHeight : bodyHeight - barHeight;
     return Scaffold(
-      appBar: _getWidgetAppBar(context, _selectedIndex),
+      appBar: appBar,
       body: SafeArea(
         // still use safe area in case of no app bar
         child: Container(
-          height: height - topHeight - 2 * barHeight,
+          height: bodyHeight,
           child: _widgetOptions[_selectedIndex],
         ),
       ),

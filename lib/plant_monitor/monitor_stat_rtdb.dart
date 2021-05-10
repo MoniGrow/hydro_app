@@ -10,6 +10,8 @@ import 'package:hydro_app/plant_monitor/detailed_stats.dart';
 import 'package:hydro_app/plant_monitor/monitor_utils.dart';
 import 'package:hydro_app/utils.dart';
 
+import 'detailed_stats_rtdb.dart';
+
 /// Lot's of duplication with MonitorStat but hey whatever
 class MonitorStatRTDB extends StatefulWidget {
   final StatType statType;
@@ -28,15 +30,12 @@ class _MonitorStatState extends State<MonitorStatRTDB> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     String uid = FirebaseAuth.instance.currentUser.uid;
-    final DatabaseReference dbRef =
-        FirebaseDatabase.instance.reference().child("users/$uid/sensor_data");
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .reference()
+        .child("users/$uid/sensor_data/${widget.statType.fieldName}");
 
     return StreamBuilder<Event>(
-        stream: dbRef
-            .child(widget.statType.fieldName)
-            .orderByChild("timestamp")
-            .limitToLast(1)
-            .onChildAdded,
+        stream: dbRef.orderByChild("timestamp").limitToLast(1).onChildAdded,
         builder: (context, event) {
           String statToPrint;
           bool loading = event.connectionState == ConnectionState.waiting &&
@@ -96,7 +95,7 @@ class _MonitorStatState extends State<MonitorStatRTDB> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (_) => DetailedStats(widget.statType)));
+                      builder: (_) => DetailedStatsRTDB(widget.statType)));
             },
           );
           return Container(

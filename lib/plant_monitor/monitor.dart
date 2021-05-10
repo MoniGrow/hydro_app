@@ -28,11 +28,19 @@ class _MonitorState extends State<Monitor> {
         child: Column(
           children: <Widget>[
             Container(
-              margin: EdgeInsets.only(top: 20),
+              alignment: Alignment.bottomLeft,
+              margin: EdgeInsets.only(top: 15, left: 15, bottom: 10),
+              child: Text(
+                "Plant Monitor",
+                style: Theme.of(context).textTheme.headline4,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 10),
               padding: EdgeInsets.symmetric(vertical: 15),
               width: width * 0.9,
               decoration: BoxDecoration(
-                // color: Colors.teal[200],
+                color: Colors.green[100],
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 // border: Border.all(width: 1),
               ),

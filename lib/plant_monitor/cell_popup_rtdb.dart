@@ -93,13 +93,6 @@ class _CellPopupStateRTDB extends State<CellPopupRTDB> {
     );
     Widget popupBody;
     if (plantData != null) {
-      int ms;
-      if (plantData["time_planted"] is int) {
-        ms = plantData["time_planted"] * 1000;
-      } else {  // data is a double
-        ms = ((plantData["time_planted"] as double) * 1000).round();
-      }
-      DateTime timePlanted = DateTime.fromMillisecondsSinceEpoch(ms);
       popupBody = Container(
         child: Column(
           children: [
@@ -136,7 +129,7 @@ class _CellPopupStateRTDB extends State<CellPopupRTDB> {
             Text("Cell ${widget.cell}"),
             Spacer(),
             Text(plantData.containsKey("time_planted")
-                ? "Time planted: $timePlanted"
+                ? "Time planted: ${Utils.dateTimeFromSeconds(plantData["time_planted"])}"
                 : "Time planted unknown"),
             Spacer(),
             Text("Age: idk yet"),

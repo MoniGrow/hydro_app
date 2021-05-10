@@ -12,11 +12,16 @@ class Utils {
     return mesh;
   }
 
-  static bool isNumeric(String s) {
-    if (s == null) {
-      return false;
+  static DateTime dateTimeFromSeconds(dynamic seconds) {
+    int ms;
+    if (seconds is double) {
+      ms = ((seconds) * 1000).round();
+    } else if (seconds is int) {
+      ms = seconds * 1000;
+    } else {
+      throw TypeError();
     }
-    return double.tryParse(s) != null;
+    return DateTime.fromMillisecondsSinceEpoch(ms);
   }
 }
 
