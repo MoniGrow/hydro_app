@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:hydro_app/utils.dart';
-import 'package:hydro_app/plant_monitor/cell_popup.dart';
 
-import 'cell_popup_rtdb.dart';
+import 'cell_popup.dart';
 
 class HydroOverview extends StatelessWidget {
   final SystemLayout layout = SystemLayout.prototypeLayout();
@@ -48,7 +47,7 @@ class CellButton extends StatelessWidget {
           Icons.adjust,
           color: Colors.grey[900],
         ),
-        onPressed: () => Navigator.push(context, CellPopupRouteRTDB(cell)),
+        onPressed: () => Navigator.push(context, CellPopupRoute(cell)),
       ),
     );
   }

@@ -1,14 +1,13 @@
-import 'dart:math';
-
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:hydro_app/plant_monitor/detailed_stats.dart';
 import 'package:hydro_app/plant_monitor/monitor_utils.dart';
-import 'package:hydro_app/utils.dart';
 
+import 'detailed_stats.dart';
+
+/// Lot's of duplication with MonitorStat but hey whatever
 class MonitorStat extends StatefulWidget {
   final StatType statType;
   final double buttonHeight;
@@ -26,37 +25,31 @@ class _MonitorStatState extends State<MonitorStat> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     String uid = FirebaseAuth.instance.currentUser.uid;
-    CollectionReference data = FirebaseFirestore.instance
-        .collection(FirebaseConst.USER_COLLECTION)
-        .doc(uid)
-        .collection(FirebaseConst.SENSOR_DATA_COLLECTION);
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .reference()
+        .child("users/$uid/sensor_data/${widget.statType.fieldName}");
 
-    return StreamBuilder<QuerySnapshot>(
-        // VERY IMPORTANT NOTE: the collection needs to have a composite index
-        // build on it in order to use orderBy, or else it just returns empty
-        // queries
-        stream:
-            data.orderBy("timestamp", descending: true).limit(1).snapshots(),
-        builder: (context, snapshot) {
+    return StreamBuilder<Event>(
+        stream: dbRef.orderByChild("timestamp").limitToLast(1).onChildAdded,
+        builder: (context, event) {
           String statToPrint;
-          bool loading = snapshot.connectionState == ConnectionState.waiting &&
+          bool loading = event.connectionState == ConnectionState.waiting &&
               _mostRecent == null;
-          if (snapshot.hasError || loading) {
-            if (snapshot.hasError) {
+          if (event.hasError || loading) {
+            if (event.hasError) {
               statToPrint = "Something went wrong!";
             } else if (loading) {
               statToPrint = "Loading...";
             }
           } else {
-            if (snapshot.data.docs.isNotEmpty) {
+            if (event.hasData) {
               dynamic retrieved =
-                  snapshot.data.docs.first.data()[widget.statType.fieldName];
+                  event.data.snapshot.value[widget.statType.fieldName];
               if (retrieved is double) {
                 _mostRecent =
                     num.parse(retrieved.toStringAsFixed(2)).toString();
               } else {
-                _mostRecent =
-                    retrieved.toString();
+                _mostRecent = retrieved.toString();
               }
             } else {
               print("Query snapshot is empty");
@@ -78,7 +71,7 @@ class _MonitorStatState extends State<MonitorStat> {
                 Text(
                   widget.statType.label,
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Colors.grey[850],
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
@@ -87,7 +80,7 @@ class _MonitorStatState extends State<MonitorStat> {
                 Text(
                   "$statToPrint ${widget.statType.unit}",
                   style: TextStyle(
-                    color: Colors.grey[850],
+                    color: Colors.grey[700],
                     fontSize: 16,
                   ),
                 ),

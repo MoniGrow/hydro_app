@@ -1,7 +1,7 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
 import 'package:hydro_app/plant_monitor/monitor_utils.dart';
@@ -27,10 +27,9 @@ class _DetailedStatsState extends State<DetailedStats> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     String uid = FirebaseAuth.instance.currentUser.uid;
-    CollectionReference data = FirebaseFirestore.instance
-        .collection(FirebaseConst.USER_COLLECTION)
-        .doc(uid)
-        .collection(FirebaseConst.SENSOR_DATA_COLLECTION);
+    DatabaseReference ref = FirebaseDatabase.instance
+        .reference()
+        .child("users/$uid/sensor_data/${widget.statType.fieldName}");
 
     return Scaffold(
       appBar: AppBar(
@@ -39,36 +38,37 @@ class _DetailedStatsState extends State<DetailedStats> {
           style: Theme.of(context).textTheme.headline5,
         ),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-          stream: data
-              .orderBy("timestamp", descending: true)
-              .limit(widget.maxDataPoints)
-              .snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
+      body: StreamBuilder<Event>(
+          stream: ref
+              .orderByChild("timestamp")
+              .limitToLast(widget.maxDataPoints)
+              .onValue,
+          builder: (context, event) {
+            if (event.hasError) {
               return Center(child: Text("Something went wrong!"));
             }
-            if (!(snapshot.connectionState == ConnectionState.waiting)) {
+            if (!(event.connectionState == ConnectionState.waiting)) {
               // Programmed so that every snapshot, the data points are
               // completely replaced, and the series is completely rebuilt.
               // Currently this is the only way I found to forcibly update the
               // graph state.
-              if (snapshot.data.docs.isNotEmpty) {
-                print(snapshot.data.docs.length);
+              if (event.hasData) {
                 dataPoints = [];
-                for (QueryDocumentSnapshot point in snapshot.data.docs) {
-                  if (point.data()[widget.statType.fieldName] != null) {
+                Map<String, dynamic> data =
+                    Map<String, dynamic>.from(event.data.snapshot.value);
+                data.forEach((key, value) {
+                  if (value[widget.statType.fieldName] != null) {
                     // assumed to be numeric
                     // todo what if it string or categorical?
-                    dynamic stat = point.data()[widget.statType.fieldName];
+                    dynamic stat = value[widget.statType.fieldName];
                     if (stat is int) {
                       stat = (stat as int).toDouble();
                     }
                     dataPoints.add(TimeSeriesStat(
-                        (point.data()["timestamp"] as Timestamp).toDate(),
-                        stat));
+                        Utils.dateTimeFromSeconds(value["timestamp"]), stat));
                   }
-                }
+                });
+                dataPoints.sort((a, b) => b.time.compareTo(a.time));
               }
             }
             _constructSeries();

@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:hydro_app/plant_monitor/monitor_utils.dart';
-import 'package:hydro_app/plant_monitor/monitor_stat.dart';
 import 'package:hydro_app/plant_monitor/hydro_overview.dart';
 import 'package:hydro_app/utils.dart';
-import 'monitor_stat_rtdb.dart';
+import 'monitor_stat.dart';
 
 class Monitor extends StatefulWidget {
   @override
@@ -58,9 +57,9 @@ class _MonitorState extends State<Monitor> {
               child: HydroOverview(),
             ),
             Container(height: 20),
-            MonitorStatRTDB(StatType.waterlevel()),
-            MonitorStatRTDB(StatType.humidity()),
-            MonitorStatRTDB(StatType.temperature()),
+            MonitorStat(StatType.waterlevel()),
+            MonitorStat(StatType.humidity()),
+            MonitorStat(StatType.temperature()),
           ],
         ),
       ),

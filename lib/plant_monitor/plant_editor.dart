@@ -1,14 +1,15 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:hydro_app/utils.dart';
 
 class PlantEditor extends StatefulWidget {
   final Map<String, dynamic> preExisting;
+  final int cell;
 
-  PlantEditor(this.preExisting);
+  PlantEditor(this.preExisting, this.cell);
 
   @override
   _PlantEditorState createState() => _PlantEditorState();
@@ -136,28 +137,18 @@ class _PlantEditorState extends State<PlantEditor> {
                         hours: selectedTime.hour,
                         minutes: selectedTime.minute));
                     var data = {
-                      "cell_num": widget.preExisting["cell_num"],
-                      "plant_name": plantName,
-                      "time_planted": Timestamp.fromDate(parsedTime)
+                      "cell${widget.cell}": {
+                        "cell_num": widget.cell,
+                        "plant_name": plantName,
+                        "time_planted":
+                            parsedTime.millisecondsSinceEpoch.toDouble() / 1000
+                      }
                     };
                     String uid = FirebaseAuth.instance.currentUser.uid;
-                    CollectionReference plants = FirebaseFirestore.instance
-                        .collection(FirebaseConst.USER_COLLECTION)
-                        .doc(uid)
-                        .collection(FirebaseConst.PLANT_DATA_COLLECTION);
-                    plants
-                        .where("cell_num",
-                            isEqualTo: widget.preExisting["cell_num"])
-                        .get()
-                        .then((snapshot) {
-                      if (snapshot.size == 0) {
-                        plants
-                            .doc(widget.preExisting["cell_num"].toString())
-                            .set(data);
-                      } else {
-                        plants.doc(snapshot.docs.first.id).set(data);
-                      }
-                    });
+                    FirebaseDatabase.instance
+                        .reference()
+                        .child("users/$uid/grown_plants")
+                        .update(data);
                     Navigator.pop(context);
                   }
                 },
