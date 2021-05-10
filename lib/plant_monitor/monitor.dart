@@ -40,8 +40,6 @@ class _MonitorState extends State<Monitor> {
               child: HydroOverview(),
             ),
             Container(height: 20),
-            // TODO very bad triple query, change soon
-            // (or just restructure the data)
             MonitorStatRTDB(StatType.waterlevel()),
             MonitorStatRTDB(StatType.humidity()),
             MonitorStatRTDB(StatType.temperature()),
