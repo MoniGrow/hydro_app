@@ -44,8 +44,11 @@ class ProfileMainState extends State<ProfileMain> {
                 height: 100,
                 margin: EdgeInsets.only(left: 20),
                 child: ClipOval(
-                  child: Image(
-                    image: pfp,
+                  child: FadeInImage(
+                    placeholder: AssetImage(Images.profile_blank),
+                    image: user != null
+                        ? NetworkImage(user.photoURL)
+                        : AssetImage(Images.profile_blank),
                   ),
                 ),
               ),
@@ -53,7 +56,7 @@ class ProfileMainState extends State<ProfileMain> {
                 child: Column(
                   children: [
                     Container(
-                      child: Text(name),
+                      child: Text(user != null ? user.displayName : "User"),
                     ),
                     user != null
                         ? GoogleSignOutButton(this)

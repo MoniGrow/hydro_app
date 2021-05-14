@@ -80,8 +80,8 @@ class _MonitorStatState extends State<MonitorStat> {
                 Text(
                   "$statToPrint ${widget.statType.unit}",
                   style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 16,
+                    color: Colors.grey[800],
+                    fontSize: 18,
                   ),
                 ),
               ],

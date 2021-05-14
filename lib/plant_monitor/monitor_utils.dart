@@ -42,4 +42,9 @@ class TimeSeriesStat {
   final double stat;
 
   TimeSeriesStat(this.time, this.stat);
+
+  @override
+  String toString() {
+    return "{$time: $stat}";
+  }
 }
