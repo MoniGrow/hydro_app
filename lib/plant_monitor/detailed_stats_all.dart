@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:hydro_app/plant_monitor/monitor_utils.dart';
+import 'package:hydro_app/plant_monitor/sortable_series_table.dart';
 import 'package:hydro_app/utils.dart';
 
 /// Screen to display the table of even more stats
@@ -72,26 +73,7 @@ class _DetailedStatsAllState extends State<DetailedStatsAll> {
                 Expanded(
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
-                    child: DataTable(
-                      columns: [
-                        DataColumn(
-                          label: Text("Time"),
-                        ),
-                        DataColumn(
-                          label: Text(widget.statType.label),
-                        ),
-                      ],
-                      rows: dataPoints
-                          .map(
-                            (d) => DataRow(
-                              cells: [
-                                DataCell(Text(d.time.toString())),
-                                DataCell(Text(d.stat.toString())),
-                              ],
-                            ),
-                          )
-                          .toList(),
-                    ),
+                    child: SortableSeriesTable(widget.statType, dataPoints),
                   ),
                 ),
               ],

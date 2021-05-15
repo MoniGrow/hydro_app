@@ -10,6 +10,7 @@ import 'package:hydro_app/plant_monitor/monitor_utils.dart';
 import 'package:hydro_app/utils.dart';
 
 import 'detailed_stats_all.dart';
+import 'sortable_series_table.dart';
 
 class DetailedStats extends StatefulWidget {
   final StatType statType;
@@ -30,6 +31,7 @@ class _DetailedStatsState extends State<DetailedStats> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     String uid = FirebaseAuth.instance.currentUser.uid;
     DatabaseReference ref = FirebaseDatabase.instance
         .reference()
@@ -117,33 +119,14 @@ class _DetailedStatsState extends State<DetailedStats> {
                 ),
                 Expanded(
                   child: Container(
-                    width: double.infinity,
+                    width: width,
                     decoration: BoxDecoration(
                       color: Colors.green[100],
                     ),
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          DataTable(
-                            columns: [
-                              DataColumn(
-                                label: Text("Time"),
-                              ),
-                              DataColumn(
-                                label: Text(widget.statType.label),
-                              ),
-                            ],
-                            rows: dataPoints
-                                .map(
-                                  (d) => DataRow(
-                                    cells: [
-                                      DataCell(Text(d.time.toString())),
-                                      DataCell(Text(d.stat.toString())),
-                                    ],
-                                  ),
-                                )
-                                .toList(),
-                          ),
+                          SortableSeriesTable(widget.statType, dataPoints),
                           dataPoints.isEmpty
                               ? Text("No data recorded in the last 12 hours")
                               : Container(),
