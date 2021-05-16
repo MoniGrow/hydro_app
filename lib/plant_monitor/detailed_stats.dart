@@ -28,6 +28,39 @@ class _DetailedStatsState extends State<DetailedStats> {
   List<TimeSeriesStat> dataPoints = [];
   List<charts.Series<TimeSeriesStat, DateTime>> _seriesList;
 
+  Widget generalStat(String label, double stat) {
+    return Column(
+      children: [
+        // TODO overflow error when numbers are too big, need way to shorten
+        RichText(
+          text: TextSpan(
+            style: TextStyle(
+              color: Colors.grey[850],
+              fontSize: 21,
+              fontWeight: FontWeight.w600,
+              fontFamily: "Nunito",
+            ),
+            children: [
+              TextSpan(text: num.parse(stat.toStringAsFixed(2)).toString()),
+              TextSpan(
+                text: " ${widget.statType.unit}",
+                style: TextStyle(color: Colors.green[700]),
+              ),
+            ],
+          ),
+        ),
+        Container(height: 6),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -44,7 +77,7 @@ class _DetailedStatsState extends State<DetailedStats> {
           style: TextStyle(
             color: Colors.grey[900],
             fontWeight: FontWeight.w400,
-            fontSize: 22,
+            fontSize: 24,
           ),
         ),
         elevation: 0,
@@ -99,9 +132,18 @@ class _DetailedStatsState extends State<DetailedStats> {
               }
             }
             _constructSeries();
+            double mean = 0;
+            double max = 0;
+            double min = double.infinity;
+            for (var p in dataPoints) {
+              mean += p.stat;
+              max = p.stat > max ? p.stat : max;
+              min = p.stat < min ? p.stat : min;
+            }
+            mean /= dataPoints.length;
             return Column(
               children: [
-                Text("Data from the last 12 hours"),
+                Text("Displaying recent data"),
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 7),
                   height: height * 0.4,
@@ -123,24 +165,51 @@ class _DetailedStatsState extends State<DetailedStats> {
                     decoration: BoxDecoration(
                       color: Colors.green[100],
                     ),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          SortableSeriesTable(widget.statType, dataPoints),
-                          dataPoints.isEmpty
-                              ? Text("No data recorded in the last 12 hours")
-                              : Container(),
-                          ElevatedButton(
-                            child: Text("View all past data"),
-                            onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      DetailedStatsAll(widget.statType),
-                                )),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: width * 0.93,
+                          margin: EdgeInsets.only(top: 30),
+                          padding: EdgeInsets.symmetric(vertical: 15),
+                          decoration: BoxDecoration(color: Colors.green[50]),
+                          child: Row(
+                            children: [
+                              Spacer(),
+                              generalStat("Average", mean),
+                              Spacer(),
+                              generalStat("High", max),
+                              Spacer(),
+                              generalStat("Low", min),
+                              Spacer(),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        dataPoints.isEmpty
+                            ? Text("No data recorded in the last 12 hours")
+                            : Container(
+                                margin: EdgeInsets.only(top: 20),
+                                child: Text(
+                                  "Status: Your plants are doing fine!",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                        Spacer(),
+                        ElevatedButton(
+                          child: Text("View all past data"),
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.green[600]),
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    DetailedStatsAll(widget.statType),
+                              )),
+                        ),
+                        Spacer(),
+                      ],
                     ),
                   ),
                 ),

@@ -82,6 +82,7 @@ class _MonitorStatState extends State<MonitorStat> {
                   style: TextStyle(
                     color: Colors.grey[800],
                     fontSize: 18,
+                    fontFamily: "Nunito",
                   ),
                 ),
               ],

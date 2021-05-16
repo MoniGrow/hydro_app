@@ -93,8 +93,16 @@ class _SortableSeriesTableState extends State<SortableSeriesTable> {
           .map(
             (d) => DataRow(
               cells: [
-                DataCell(Text(d.time.toString())),
-                DataCell(Text(d.stat.toString())),
+                DataCell(Text(
+                  d.time.toString(),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                )),
+                DataCell(
+                  Text(
+                    d.stat.toString(),
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                  ),
+                ),
               ],
             ),
           )
