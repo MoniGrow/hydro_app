@@ -7,7 +7,6 @@ import 'package:hydro_app/plant_monitor/monitor_utils.dart';
 
 import 'detailed_stats.dart';
 
-/// Lot's of duplication with MonitorStat but hey whatever
 class MonitorStat extends StatefulWidget {
   final StatType statType;
   final double buttonHeight;

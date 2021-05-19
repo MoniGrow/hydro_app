@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:hydro_app/pet_screen/pet_screen_main.dart';
 import 'package:hydro_app/plant_monitor/monitor.dart';
 import 'package:hydro_app/profile_settings/profile_main.dart';
+import 'package:hydro_app/shop/shop_main.dart';
 import 'package:hydro_app/utils.dart';
 
 class Home extends StatefulWidget {
@@ -15,7 +15,7 @@ class _HomeState extends State<Home> {
 
   final List<Widget> _widgetOptions = [
     Monitor(),
-    PetScreenMain(),
+    ShopMain(),
     ProfileMain(),
   ];
 
