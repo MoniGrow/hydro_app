@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:home_widget/home_widget.dart';
 
 import 'package:hydro_app/authentication.dart';
 import 'package:hydro_app/profile_settings/profile_main.dart';
@@ -32,6 +33,13 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
 
     if (user != null) {
       widget.parent.updateUser();
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => ProfileMain(user)));
+      HomeWidget.updateWidget(
+        name: "StatDisplayWidget",
+        androidName: "StatDisplayWidget",
+        iOSName: "StatDisplayWidget"
+      );
     }
 
     setState(() {
@@ -102,6 +110,13 @@ class _GoogleSignOutButtonState extends State<GoogleSignOutButton> {
       _isSigningOut = false;
     });
     widget.parent.updateUser();
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => ProfileMain(null)));
+    HomeWidget.updateWidget(
+        name: "StatDisplayWidget",
+        androidName: "StatDisplayWidget",
+        iOSName: "StatDisplayWidget"
+    );
   }
 
   @override

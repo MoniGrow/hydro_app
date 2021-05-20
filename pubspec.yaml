@@ -37,6 +37,7 @@ dependencies:
   # Other dependencies
   charts_flutter: ^0.10.0
   google_sign_in: ^5.0.1
+  home_widget: ^0.1.2+1
 
 dev_dependencies:
   flutter_test:
