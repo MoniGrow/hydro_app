@@ -33,8 +33,6 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
 
     if (user != null) {
       widget.parent.updateUser();
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => ProfileMain(user)));
       HomeWidget.updateWidget(
         name: "StatDisplayWidget",
         androidName: "StatDisplayWidget",
@@ -110,8 +108,6 @@ class _GoogleSignOutButtonState extends State<GoogleSignOutButton> {
       _isSigningOut = false;
     });
     widget.parent.updateUser();
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => ProfileMain(null)));
     HomeWidget.updateWidget(
         name: "StatDisplayWidget",
         androidName: "StatDisplayWidget",
