@@ -36,9 +36,9 @@ class _ShopMainState extends State<ShopMain>
           ],
         ),
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.lightGreen[50],
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.lightGreen[50],
       body: Column(
         children: [
           Row(
