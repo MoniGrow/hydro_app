@@ -1,72 +1,103 @@
-import 'dart:math';
-
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:hydro_app/plant_monitor/detailed_stats.dart';
-import 'package:hydro_app/utils.dart';
+import 'package:hydro_app/plant_monitor/monitor_utils.dart';
+
+import 'detailed_stats.dart';
 
 class MonitorStat extends StatefulWidget {
-  final String fieldName;
-  final String label;
+  final StatType statType;
+  final double buttonHeight;
 
-  MonitorStat(this.fieldName, {this.label});
+  MonitorStat(this.statType, {this.buttonHeight = 60});
 
   @override
   _MonitorStatState createState() => _MonitorStatState();
 }
 
 class _MonitorStatState extends State<MonitorStat> {
-  Random rng = Random();
   String _mostRecent;
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     String uid = FirebaseAuth.instance.currentUser.uid;
-    CollectionReference data = FirebaseFirestore.instance
-        .collection(FirebaseConst.USER_COLLECTION)
-        .doc(uid)
-        .collection(FirebaseConst.SENSOR_DATA_COLLECTION);
+    final DatabaseReference dbRef = FirebaseDatabase.instance
+        .reference()
+        .child("users/$uid/sensor_data/${widget.statType.fieldName}");
 
-    return StreamBuilder<QuerySnapshot>(
-        // VERY IMPORTANT NOTE: the collection needs to have a composite index
-        // build on it in order to use orderBy, or else it just returns empty
-        // queries
-        stream:
-            data.orderBy("timestamp", descending: true).limit(1).snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text(
-                (widget.label == null ? widget.fieldName : widget.label) +
-                    ": Something went wrong!");
-          }
-          if (snapshot.connectionState == ConnectionState.waiting &&
-              _mostRecent == null) {
-            return Text(
-                (widget.label == null ? widget.fieldName : widget.label) +
-                    ": Loading...");
-          }
-          if (snapshot.data.docs.isNotEmpty) {
-            _mostRecent =
-                snapshot.data.docs.first.data()[widget.fieldName].toString();
+    return StreamBuilder<Event>(
+        stream: dbRef.orderByChild("timestamp").limitToLast(1).onChildAdded,
+        builder: (context, event) {
+          String statToPrint;
+          bool loading = event.connectionState == ConnectionState.waiting &&
+              _mostRecent == null;
+          if (event.hasError || loading) {
+            if (event.hasError) {
+              statToPrint = "Something went wrong!";
+            } else if (loading) {
+              statToPrint = "Loading...";
+            }
           } else {
-            print("Query snapshot is empty");
+            if (event.hasData) {
+              dynamic retrieved =
+                  event.data.snapshot.value[widget.statType.fieldName];
+              if (retrieved is double) {
+                _mostRecent =
+                    num.parse(retrieved.toStringAsFixed(2)).toString();
+              } else {
+                _mostRecent = retrieved.toString();
+              }
+            } else {
+              print("Query snapshot is empty");
+            }
+            statToPrint =
+                _mostRecent != null ? _mostRecent : "No data recorded";
           }
-          String statToPrint =
-              _mostRecent != null ? _mostRecent : "No data recorded";
-          return TextButton(
-            child: Text(
-                (widget.label == null ? widget.fieldName : widget.label) +
-                    ": " +
-                    statToPrint),
+          Widget button = ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: widget.statType.bgColor,
+            ),
+            child: Row(
+              children: [
+                Image.asset(
+                  widget.statType.iconPath,
+                  height: widget.buttonHeight * 0.7,
+                ),
+                Container(width: 10),
+                Text(
+                  widget.statType.label,
+                  style: TextStyle(
+                    color: Colors.grey[850],
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                Spacer(),
+                Text(
+                  "$statToPrint ${widget.statType.unit}",
+                  style: TextStyle(
+                    color: Colors.grey[800],
+                    fontSize: 18,
+                    fontFamily: "Nunito",
+                  ),
+                ),
+              ],
+            ),
             onPressed: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (_) => DetailedStats(widget.fieldName)));
+                      builder: (_) => DetailedStats(widget.statType)));
             },
+          );
+          return Container(
+            margin: EdgeInsets.symmetric(vertical: 10),
+            width: width * 0.9,
+            height: widget.buttonHeight,
+            child: button,
           );
         });
   }

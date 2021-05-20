@@ -1,6 +1,6 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hydro_app/plant_monitor/plant_editor.dart';
 
@@ -41,21 +41,32 @@ class CellPopup extends StatefulWidget {
 
 class _CellPopupState extends State<CellPopup> {
   Map<String, dynamic> plantData;
+  bool _loading = true;
 
   void retrievePlant() async {
-    // todo cache this probably maybe
     String uid = FirebaseAuth.instance.currentUser.uid;
-    Query plants = FirebaseFirestore.instance
-        .collection(FirebaseConst.USER_COLLECTION)
-        .doc(uid)
-        .collection(FirebaseConst.PLANT_DATA_COLLECTION)
-        .where("cell_num", isEqualTo: widget.cell);
-
-    await plants.get().then((snapshot) {
-      if (snapshot.size == 0) return;
-      setState(() {
-        plantData = snapshot.docs.first.data();
-      });
+    DatabaseReference ref =
+        FirebaseDatabase.instance.reference().child("users/$uid/grown_plants");
+    // very major note: do not set the key of the cell to 1, it's cursed
+    // when queried for some reason
+    await ref
+        .orderByChild("cell_num")
+        .limitToLast(1)
+        .equalTo(widget.cell)
+        .once()
+        .then((snapshot) {
+      if (snapshot.value != null) {
+        Map<String, dynamic>.from(snapshot.value).forEach((key, value) {
+          setState(() {
+            plantData = Map<String, dynamic>.from(value);
+            _loading = false;
+          });
+        });
+      } else {
+        setState(() {
+          _loading = false;
+        });
+      }
     });
   }
 
@@ -81,13 +92,15 @@ class _CellPopupState extends State<CellPopup> {
               onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => PlantEditor(plantData),
+                    builder: (_) => PlantEditor(plantData, widget.cell),
                   ))),
         ),
       ],
     );
     Widget popupBody;
     if (plantData != null) {
+      DateTime timePlanted =
+          Utils.dateTimeFromSeconds(plantData["time_planted"]);
       popupBody = Container(
         child: Column(
           children: [
@@ -97,22 +110,25 @@ class _CellPopupState extends State<CellPopup> {
                   margin: EdgeInsets.only(left: 15, top: 15),
                   width: 75,
                   height: 75,
-                  child: Image(
+                  child: FadeInImage(
+                    placeholder: AssetImage(Images.question_mark),
                     image: plantData.containsKey("image_url")
                         ? NetworkImage(plantData["image_url"])
                         : AssetImage(Images.question_mark),
                     fit: BoxFit.cover,
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(left: 45, top: 10),
-                  child: Text(
-                    plantData.containsKey("plant_name")
-                        ? plantData["plant_name"]
-                        : "Plant name missing",
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.only(left: 45, top: 10),
+                    child: Text(
+                      plantData.containsKey("plant_name")
+                          ? plantData["plant_name"]
+                          : "Plant name missing",
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -121,13 +137,24 @@ class _CellPopupState extends State<CellPopup> {
             Text("Cell ${widget.cell}"),
             Spacer(),
             Text(plantData.containsKey("time_planted")
-                ? "Time planted: ${(plantData['time_planted'] as Timestamp).toDate().toString()}"
+                ? "Time planted: $timePlanted"
                 : "Time planted unknown"),
             Spacer(),
-            Text("Age: idk yet"),
+            Text("Age: ${DateTime.now().difference(timePlanted).inDays} days"),
             Spacer(
               flex: 3,
             ),
+            buttonRow,
+          ],
+        ),
+      );
+    } else if (plantData == null && !_loading) {
+      popupBody = Center(
+        child: Column(
+          children: [
+            Spacer(),
+            Text("Cell ${widget.cell}: No plant stored yet"),
+            Spacer(),
             buttonRow,
           ],
         ),
@@ -137,7 +164,7 @@ class _CellPopupState extends State<CellPopup> {
         child: Column(
           children: [
             Spacer(),
-            Text("No plant stored yet"),
+            Text("Loading..."),
             Spacer(),
             buttonRow,
           ],

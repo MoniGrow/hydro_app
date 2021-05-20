@@ -28,7 +28,7 @@ dependencies:
   firebase_core: ^1.0.3
   firebase_auth: ^1.0.3
   firebase_analytics: ^7.1.1
-  cloud_firestore: ^1.0.4
+  firebase_database: ^6.1.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -60,7 +60,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - graphics/
-    - graphics/plants/
+    - graphics/stat_icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -87,3 +87,17 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+  fonts:
+    - family: Nunito
+      fonts:
+        - asset: fonts/Nunito-Regular.ttf
+        - asset: fonts/Nunito-ExtraLight.ttf
+          weight: 200
+        - asset: fonts/Nunito-Light.ttf
+          weight: 300
+        - asset: fonts/Nunito-SemiBold.ttf
+          weight: 600
+        - asset: fonts/Nunito-Bold.ttf
+          weight: 700
+        - asset: fonts/Nunito-ExtraBold.ttf
+          weight: 800

@@ -1,17 +1,24 @@
+import 'dart:math';
+
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
+import 'package:hydro_app/plant_monitor/monitor_utils.dart';
 import 'package:hydro_app/utils.dart';
 
-class DetailedStats extends StatefulWidget {
-  final String fieldName;
-  final int maxDataPoints;
-  // TODO: also limit data by how recent the data is
+import 'detailed_stats_all.dart';
+import 'sortable_series_table.dart';
 
-  DetailedStats(this.fieldName, {this.maxDataPoints = 50});
+class DetailedStats extends StatefulWidget {
+  final StatType statType;
+  final int maxDataPoints;
+  final double recentSecondsLimit;
+
+  DetailedStats(this.statType,
+      {this.maxDataPoints = 15, this.recentSecondsLimit = 43200});
 
   @override
   _DetailedStatsState createState() => _DetailedStatsState();
@@ -21,71 +28,187 @@ class _DetailedStatsState extends State<DetailedStats> {
   List<TimeSeriesStat> dataPoints = [];
   List<charts.Series<TimeSeriesStat, DateTime>> _seriesList;
 
+  Widget generalStat(String label, double stat) {
+    return Column(
+      children: [
+        // TODO overflow error when numbers are too big, need way to shorten
+        RichText(
+          text: TextSpan(
+            style: TextStyle(
+              color: Colors.grey[850],
+              fontSize: 21,
+              fontWeight: FontWeight.w600,
+              fontFamily: "Nunito",
+            ),
+            children: [
+              TextSpan(text: num.parse(stat.toStringAsFixed(2)).toString()),
+              TextSpan(
+                text: " ${widget.statType.unit}",
+                style: TextStyle(color: Colors.green[700]),
+              ),
+            ],
+          ),
+        ),
+        Container(height: 6),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     String uid = FirebaseAuth.instance.currentUser.uid;
-    CollectionReference data = FirebaseFirestore.instance
-        .collection(FirebaseConst.USER_COLLECTION)
-        .doc(uid)
-        .collection(FirebaseConst.SENSOR_DATA_COLLECTION);
+    DatabaseReference ref = FirebaseDatabase.instance
+        .reference()
+        .child("users/$uid/sensor_data/${widget.statType.fieldName}");
 
     return Scaffold(
-      appBar: AppBar(),
-      body: StreamBuilder<QuerySnapshot>(
-          stream: data
-              .orderBy("timestamp", descending: true)
-              .limit(widget.maxDataPoints)
-              .snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
+      appBar: AppBar(
+        title: Text(
+          "${widget.statType.label}",
+          style: TextStyle(
+            color: Colors.grey[900],
+            fontWeight: FontWeight.w400,
+            fontSize: 24,
+          ),
+        ),
+        elevation: 0,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            onSelected: (value) => null,
+            itemBuilder: (BuildContext context) {
+              return {'Settings'}.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+          ),
+        ],
+      ),
+      body: StreamBuilder<Event>(
+          stream: ref
+              .orderByChild("timestamp")
+              .startAt(DateTime.now().millisecondsSinceEpoch.toDouble() / 1000 -
+                  widget.recentSecondsLimit)
+              .limitToLast(widget.maxDataPoints)
+              .onValue,
+          builder: (context, event) {
+            if (event.hasError) {
               return Center(child: Text("Something went wrong!"));
             }
-            if (!(snapshot.connectionState == ConnectionState.waiting)) {
+            if (!(event.connectionState == ConnectionState.waiting)) {
               // Programmed so that every snapshot, the data points are
               // completely replaced, and the series is completely rebuilt.
               // Currently this is the only way I found to forcibly update the
               // graph state.
-              if (snapshot.data.docs.isNotEmpty) {
-                dataPoints = snapshot.data.docs.map((e) {
-                  return TimeSeriesStat(
-                      (e.data()["timestamp"] as Timestamp).toDate(),
-                      (e.data()[widget.fieldName] as int).toDouble());
-                }).toList();
+              if (event.hasData && event.data.snapshot.value != null) {
+                dataPoints = [];
+                Map<String, dynamic> data =
+                    Map<String, dynamic>.from(event.data.snapshot.value);
+                data.forEach((key, value) {
+                  if (value[widget.statType.fieldName] != null) {
+                    // assumed to be numeric
+                    // todo what if it string or categorical?
+                    dynamic stat = value[widget.statType.fieldName];
+                    if (stat is int) {
+                      stat = (stat as int).toDouble();
+                    }
+                    dataPoints.add(TimeSeriesStat(
+                        Utils.dateTimeFromSeconds(value["timestamp"]), stat));
+                  }
+                });
+                dataPoints.sort((a, b) => b.time.compareTo(a.time));
               }
             }
             _constructSeries();
+            double mean = 0;
+            double max = 0;
+            double min = double.infinity;
+            for (var p in dataPoints) {
+              mean += p.stat;
+              max = p.stat > max ? p.stat : max;
+              min = p.stat < min ? p.stat : min;
+            }
+            mean /= dataPoints.length;
             return Column(
               children: [
+                Text("Displaying recent data"),
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 5),
+                  margin: EdgeInsets.symmetric(horizontal: 7),
                   height: height * 0.4,
                   child: charts.TimeSeriesChart(
                     _seriesList,
                     animate: true,
                     dateTimeFactory: const charts.LocalDateTimeFactory(),
+                    domainAxis: charts.EndPointsTimeAxisSpec(),
+                    defaultRenderer:
+                        charts.LineRendererConfig(includeArea: true),
+                    customSeriesRenderers: [
+                      new charts.PointRendererConfig(customRendererId: 'point'),
+                    ],
                   ),
                 ),
-                Text("hello"),
                 Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: DataTable(
-                      columns: [
-                        DataColumn(
-                          label: Text("Time"),
+                  child: Container(
+                    width: width,
+                    decoration: BoxDecoration(
+                      color: Colors.green[100],
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: width * 0.93,
+                          margin: EdgeInsets.only(top: 30),
+                          padding: EdgeInsets.symmetric(vertical: 15),
+                          decoration: BoxDecoration(color: Colors.green[50]),
+                          child: Row(
+                            children: [
+                              Spacer(),
+                              generalStat("Average", mean),
+                              Spacer(),
+                              generalStat("High", max),
+                              Spacer(),
+                              generalStat("Low", min),
+                              Spacer(),
+                            ],
+                          ),
                         ),
-                        DataColumn(
-                          label: Text("Data type"),
+                        dataPoints.isEmpty
+                            ? Text("No data recorded in the last 12 hours")
+                            : Container(
+                                margin: EdgeInsets.only(top: 20),
+                                child: Text(
+                                  "Status: Your plants are doing fine!",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                        Spacer(),
+                        ElevatedButton(
+                          child: Text("View all past data"),
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.green[600]),
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    DetailedStatsAll(widget.statType),
+                              )),
                         ),
-                      ],
-                      rows: [
-                        ...dataPoints.map((d) => DataRow(
-                              cells: [
-                                DataCell(Text(d.time.toString())),
-                                DataCell(Text(d.stat.toString())),
-                              ],
-                            )),
+                        Spacer(),
                       ],
                     ),
                   ),
@@ -99,20 +222,21 @@ class _DetailedStatsState extends State<DetailedStats> {
   void _constructSeries() {
     _seriesList = [
       charts.Series<TimeSeriesStat, DateTime>(
-        id: 'Stats',
-        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        id: 'Line',
+        colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.blue[800]),
+        areaColorFn: (_, __) =>
+            charts.ColorUtil.fromDartColor(Colors.blue[400].withAlpha(75)),
         domainFn: (TimeSeriesStat stats, _) => stats.time,
         measureFn: (TimeSeriesStat stats, _) => stats.stat,
         data: dataPoints,
       ),
+      charts.Series<TimeSeriesStat, DateTime>(
+        id: 'Points',
+        colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.teal[800]),
+        domainFn: (TimeSeriesStat stats, _) => stats.time,
+        measureFn: (TimeSeriesStat stats, _) => stats.stat,
+        data: dataPoints,
+      )..setAttribute(charts.rendererIdKey, "point"),
     ];
   }
-}
-
-/// Sample time series data type.
-class TimeSeriesStat {
-  final DateTime time;
-  final double stat;
-
-  TimeSeriesStat(this.time, this.stat);
 }

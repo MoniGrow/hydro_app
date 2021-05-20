@@ -9,6 +9,10 @@ import 'package:hydro_app/profile_settings/profile_main.dart';
 /// Google sign-in button
 /// Displays a loading icon while signing in.
 class GoogleSignInButton extends StatefulWidget {
+  final ProfileMainState parent;
+
+  GoogleSignInButton(this.parent);
+
   @override
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
 }
@@ -28,6 +32,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
     });
 
     if (user != null) {
+      widget.parent.updateUser();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => ProfileMain(user)));
       HomeWidget.updateWidget(
@@ -48,7 +53,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
       padding: const EdgeInsets.only(bottom: 16.0),
       child: _isSigningIn
           ? CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
             )
           : OutlinedButton(
               style: ButtonStyle(
@@ -60,21 +65,18 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                 ),
               ),
               onPressed: _signIn,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 10),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Text(
-                        'Sign in with Google',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black54,
-                          fontWeight: FontWeight.w600,
-                        ),
+                  children: [
+                    Text(
+                      'Sign in with Google',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w600,
                       ),
                     )
                   ],
@@ -88,6 +90,10 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
 /// Google sign-out button
 /// Displays a loading icon while signing out.
 class GoogleSignOutButton extends StatefulWidget {
+  final ProfileMainState parent;
+
+  GoogleSignOutButton(this.parent);
+
   @override
   _GoogleSignOutButtonState createState() => _GoogleSignOutButtonState();
 }
@@ -103,6 +109,7 @@ class _GoogleSignOutButtonState extends State<GoogleSignOutButton> {
     setState(() {
       _isSigningOut = false;
     });
+    widget.parent.updateUser();
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => ProfileMain(null)));
     HomeWidget.updateWidget(
@@ -116,7 +123,7 @@ class _GoogleSignOutButtonState extends State<GoogleSignOutButton> {
   Widget build(BuildContext context) {
     return _isSigningOut
         ? CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
           )
         : ElevatedButton(
             style: ButtonStyle(
@@ -131,11 +138,11 @@ class _GoogleSignOutButtonState extends State<GoogleSignOutButton> {
             ),
             onPressed: _signOut,
             child: Padding(
-              padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+              padding: EdgeInsets.symmetric(vertical: 8),
               child: Text(
                 'Sign Out',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   letterSpacing: 2,

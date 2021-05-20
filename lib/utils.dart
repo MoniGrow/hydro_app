@@ -11,6 +11,18 @@ class Utils {
     }
     return mesh;
   }
+
+  static DateTime dateTimeFromSeconds(dynamic seconds) {
+    int ms;
+    if (seconds is double) {
+      ms = ((seconds) * 1000).round();
+    } else if (seconds is int) {
+      ms = seconds * 1000;
+    } else {
+      throw TypeError();
+    }
+    return DateTime.fromMillisecondsSinceEpoch(ms);
+  }
 }
 
 /// Utility widget to draw a border around some child (for debugging).
@@ -40,31 +52,22 @@ class DrawBorder extends StatelessWidget {
 }
 
 class ScreenPaths {
+  // static const String title = "/";
   static const String home = "/";
-
-  static const String monitor = "/monitor";
-  static const String plantEdit = monitor + "/edit";
-
-  static const String pet = "/pet";
-  static const String pet_customize = pet + "/customize";
-
-  static const String profile = "/profile";
+  static const String plantEdit = "/edit";
 }
 
 class Images {
   static const String cat = "graphics/CAT_IDEA_ROUGH_2_CROPPED.png";
   static const String overview_1 = "graphics/overhead_view_basic.png";
-  static const String qb = "graphics/qb.jpg";
+  static const String overview_proto_1 = "graphics/overhead_view_prototype.png";
   static const String profile_blank = "graphics/profile_blank.png";
   static const String question_mark = "graphics/question_mark.png";
 
-  static const String brain = "graphics/brain.jpg";
-  static const String tree = "graphics/tree.jpeg";
-  static const String shopfront = "graphics/shopfront.jpg";
-
-  static const String plant_basil = "graphics/plants/basil.jpg";
-  static const String plant_cilantro = "graphics/plants/cilantro.jpg";
-  static const String plant_rosemary = "graphics/plants/rosemary.jpg";
+  static const String icon_temperature = "graphics/stat_icons/temperature.png";
+  static const String icon_waterlevel = "graphics/stat_icons/waterlevel.png";
+  static const String icon_humidity = "graphics/stat_icons/humidity.png";
+  static const String icon_plant = "graphics/stat_icons/plant.png";
 }
 
 class FirebaseConst {
