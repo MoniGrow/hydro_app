@@ -184,7 +184,8 @@ class _PlantEditorState extends State<PlantEditor> {
                         Expanded(
                           child: Column(
                             children: [
-                              Text("${selectedDate.toLocal()}".split(' ')[0]),
+                              Text("${selectedDate.toLocal()}".split(' ')[0],
+                                  style: labelStyle),
                               ElevatedButton(
                                 onPressed: () => _selectDate(context),
                                 child: Text('Select date'),
@@ -197,7 +198,7 @@ class _PlantEditorState extends State<PlantEditor> {
                         Expanded(
                           child: Column(
                             children: [
-                              Text(_time),
+                              Text(_time, style: labelStyle),
                               ElevatedButton(
                                 onPressed: () => _selectTime(context),
                                 child: Text('Select time'),
@@ -212,6 +213,7 @@ class _PlantEditorState extends State<PlantEditor> {
                     Row(
                       children: [
                         Text("Min temperature"),
+                        Container(width: 4),
                         Expanded(
                           child: TextFormField(
                             validator:
@@ -221,6 +223,7 @@ class _PlantEditorState extends State<PlantEditor> {
                           ),
                         ),
                         Text("Max temperature"),
+                        Container(width: 4),
                         Expanded(
                           child: TextFormField(
                             validator:
