@@ -28,6 +28,7 @@ class _PlantEditorState extends State<PlantEditor> {
   String _minute = "00";
   String _time = "00:00";
   String img_url = "";
+  String description = "";
 
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay(hour: 00, minute: 00);
@@ -53,6 +54,7 @@ class _PlantEditorState extends State<PlantEditor> {
             .toString();
     setState(() {
       img_url = Utils.retrieveMapData(data, "image_url", noneValue: "");
+      description = Utils.retrieveMapData(data, "description", noneValue: "");
     });
   }
 
@@ -212,7 +214,7 @@ class _PlantEditorState extends State<PlantEditor> {
                     ),
                     Row(
                       children: [
-                        Text("Min temperature"),
+                        Text("Min temperature", style: labelStyle),
                         Container(width: 4),
                         Expanded(
                           child: TextFormField(
@@ -222,7 +224,7 @@ class _PlantEditorState extends State<PlantEditor> {
                             keyboardType: TextInputType.number,
                           ),
                         ),
-                        Text("Max temperature"),
+                        Text("Max temperature", style: labelStyle),
                         Container(width: 4),
                         Expanded(
                           child: TextFormField(
@@ -260,6 +262,7 @@ class _PlantEditorState extends State<PlantEditor> {
                     parsedTime.millisecondsSinceEpoch.toDouble() / 1000,
                 "temp_min": double.parse(_tempMinController.text),
                 "temp_max": double.parse(_tempMaxController.text),
+                "description": description,
               }
             };
             String uid = FirebaseAuth.instance.currentUser.uid;

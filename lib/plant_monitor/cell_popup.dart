@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hydro_app/plant_monitor/monitor_utils.dart';
 import 'package:hydro_app/plant_monitor/plant_editor.dart';
 
 import 'package:hydro_app/utils.dart';
@@ -78,6 +79,7 @@ class _CellPopupState extends State<CellPopup> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     Widget buttonRow = Row(
       children: [
         IconButton(
@@ -121,27 +123,73 @@ class _CellPopupState extends State<CellPopup> {
                 ),
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.only(left: 45, top: 10),
-                    child: Text(
-                      plantData.containsKey("plant_name")
-                          ? plantData["plant_name"].toString().capitalize()
-                          : "Plant name missing",
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    margin: EdgeInsets.only(top: 10),
+                    child: Column(
+                      children: [
+                        Text(
+                          plantData.containsKey("plant_name")
+                              ? plantData["plant_name"].toString().capitalize()
+                              : "Plant name missing",
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text("Cell ${widget.cell}"),
+                        Text(
+                            "Age: ${DateTime.now().difference(timePlanted).inDays} days"),
+                      ],
                     ),
                   ),
                 ),
               ],
             ),
-            Text("Cell ${widget.cell}"),
-            Spacer(),
-            Text(plantData.containsKey("time_planted")
-                ? "Time planted: $timePlanted"
-                : "Time planted unknown"),
-            Spacer(),
-            Text("Age: ${DateTime.now().difference(timePlanted).inDays} days"),
+            Spacer(flex: 1),
+            Container(
+              margin: EdgeInsets.only(top: 20),
+              padding: EdgeInsets.symmetric(vertical: 10),
+              width: 250,
+              decoration: BoxDecoration(
+                color: Colors.green[100],
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                border: Border.all(width: 1),
+              ),
+              alignment: Alignment.center,
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 12),
+                child: Column(
+                  children: [
+                    Text(
+                      "Additional information",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Container(height: 10),
+                    Text(
+                      plantData.containsKey("time_planted")
+                          ? "Time planted: ${timePlanted.toString().split(".")[0]}"
+                          : "Time planted unknown",
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    Container(height: 10),
+                    Text(
+                      plantData.containsKey("temp_min") &&
+                              plantData.containsKey("temp_max")
+                          ? "Ideal temperature range: ${plantData["temp_min"]}-"
+                              "${plantData["temp_max"]} ${StatType.temperature().unit}"
+                          : "Idea temperature range unknown",
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    Container(height: 10),
+                    Text(plantData.containsKey("description")
+                        ? plantData["description"]
+                        : ""),
+                  ],
+                ),
+              ),
+            ),
             Spacer(
               flex: 3,
             ),
