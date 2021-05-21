@@ -24,18 +24,17 @@ class HydroApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.green[300],
         scaffoldBackgroundColor: Colors.green[200],
+        buttonColor: Colors.green[600],
         textTheme: TextTheme(
           headline4: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w400,
             fontSize: 32,
-            // fontFamily: "Nunito",
           ),
           headline5: TextStyle(
             color: Colors.grey[900],
             fontWeight: FontWeight.w600,
             fontSize: 24,
-            // fontFamily: "Nunito",
           ),
         ),
       ),

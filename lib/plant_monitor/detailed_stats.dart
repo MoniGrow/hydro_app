@@ -200,7 +200,7 @@ class _DetailedStatsState extends State<DetailedStats> {
                         ElevatedButton(
                           child: Text("View all past data"),
                           style: ElevatedButton.styleFrom(
-                              primary: Colors.green[600]),
+                              primary: Theme.of(context).buttonColor),
                           onPressed: () => Navigator.push(
                               context,
                               MaterialPageRoute(

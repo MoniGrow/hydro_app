@@ -124,7 +124,7 @@ class _CellPopupState extends State<CellPopup> {
                     margin: EdgeInsets.only(left: 45, top: 10),
                     child: Text(
                       plantData.containsKey("plant_name")
-                          ? plantData["plant_name"]
+                          ? plantData["plant_name"].toString().capitalize()
                           : "Plant name missing",
                       style: TextStyle(
                         fontSize: 30,

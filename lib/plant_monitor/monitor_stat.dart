@@ -62,10 +62,7 @@ class _MonitorStatState extends State<MonitorStat> {
             ),
             child: Row(
               children: [
-                Image.asset(
-                  widget.statType.iconPath,
-                  height: widget.buttonHeight * 0.7,
-                ),
+                widget.statType.getIcon(widget.buttonHeight * 0.7),
                 Container(width: 10),
                 Text(
                   widget.statType.label,
