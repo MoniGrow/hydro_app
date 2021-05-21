@@ -23,6 +23,17 @@ class Utils {
     }
     return DateTime.fromMillisecondsSinceEpoch(ms);
   }
+
+  static dynamic retrieveMapData(Map<dynamic, dynamic> data, dynamic key, {dynamic noneValue}) {
+    if (data.containsKey(key)) return data[key];
+    return noneValue;
+  }
+}
+
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${this.substring(1)}";
+  }
 }
 
 /// Utility widget to draw a border around some child (for debugging).

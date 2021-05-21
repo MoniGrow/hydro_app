@@ -44,7 +44,11 @@ class _DetailedStatsState extends State<DetailedStats> {
               TextSpan(text: num.parse(stat.toStringAsFixed(2)).toString()),
               TextSpan(
                 text: " ${widget.statType.unit}",
-                style: TextStyle(color: Colors.green[700]),
+                style: TextStyle(
+                    color: (stat > widget.statType.upperBoundDefault) ||
+                            (stat < widget.statType.lowerBoundDefault)
+                        ? Colors.red[700]
+                        : Colors.green[600]),
               ),
             ],
           ),
@@ -141,6 +145,23 @@ class _DetailedStatsState extends State<DetailedStats> {
               min = p.stat < min ? p.stat : min;
             }
             mean /= dataPoints.length;
+            double upper = widget.statType.upperBoundDefault;
+            double lower = widget.statType.lowerBoundDefault;
+            bool tooHigh = (max > upper) || (min > upper);
+            bool tooLow = (max < lower) || (min < lower);
+            String statusMessage;
+            if (tooHigh && tooLow) {
+              statusMessage =
+                  "Your ${widget.statType.label.toLowerCase()} is fluctuating too much!";
+            } else if (tooHigh) {
+              statusMessage =
+                  "Your ${widget.statType.label.toLowerCase()} is too high!";
+            } else if (tooLow) {
+              statusMessage =
+                  "Your ${widget.statType.label.toLowerCase()} is too low!";
+            } else {
+              statusMessage = "Your plants are doing fine!";
+            }
             return Column(
               children: [
                 Text("Displaying recent data"),
@@ -153,9 +174,33 @@ class _DetailedStatsState extends State<DetailedStats> {
                     dateTimeFactory: const charts.LocalDateTimeFactory(),
                     domainAxis: charts.EndPointsTimeAxisSpec(),
                     defaultRenderer:
-                        charts.LineRendererConfig(includeArea: true),
+                        charts.LineRendererConfig(includeArea: false),
+                    primaryMeasureAxis: charts.NumericAxisSpec(
+                        tickProviderSpec: charts.BasicNumericTickProviderSpec(
+                            zeroBound: false)),
                     customSeriesRenderers: [
-                      new charts.PointRendererConfig(customRendererId: 'point'),
+                      charts.PointRendererConfig(customRendererId: 'point'),
+                    ],
+                    layoutConfig: charts.LayoutConfig(
+                      leftMarginSpec: charts.MarginSpec.fixedPixel(40),
+                      topMarginSpec: charts.MarginSpec.fixedPixel(20),
+                      rightMarginSpec: charts.MarginSpec.fixedPixel(20),
+                      bottomMarginSpec: charts.MarginSpec.fixedPixel(20),
+                    ),
+                    behaviors: [
+                      new charts.RangeAnnotation([
+                        new charts.RangeAnnotationSegment(
+                            widget.statType.lowerBoundDefault,
+                            widget.statType.upperBoundDefault,
+                            charts.RangeAnnotationAxisType.measure,
+                            startLabel: 'min',
+                            endLabel: 'max',
+                            labelAnchor: charts.AnnotationLabelAnchor.start,
+                            color: charts.ColorUtil.fromDartColor(
+                                Colors.blue[500].withAlpha(75))),
+                      ],
+                          defaultLabelPosition:
+                              charts.AnnotationLabelPosition.margin),
                     ],
                   ),
                 ),
@@ -187,9 +232,11 @@ class _DetailedStatsState extends State<DetailedStats> {
                         dataPoints.isEmpty
                             ? Text("No data recorded in the last 12 hours")
                             : Container(
+                                alignment: Alignment.center,
+                                width: width * 0.85,
                                 margin: EdgeInsets.only(top: 20),
                                 child: Text(
-                                  "Status: Your plants are doing fine!",
+                                  "Status: $statusMessage",
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w400,
@@ -200,7 +247,7 @@ class _DetailedStatsState extends State<DetailedStats> {
                         ElevatedButton(
                           child: Text("View all past data"),
                           style: ElevatedButton.styleFrom(
-                              primary: Colors.green[600]),
+                              primary: Theme.of(context).buttonColor),
                           onPressed: () => Navigator.push(
                               context,
                               MaterialPageRoute(
