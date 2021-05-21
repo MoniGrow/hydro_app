@@ -92,7 +92,8 @@ class _CellPopupState extends State<CellPopup> {
               onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => PlantEditor(plantData, widget.cell),
+                    builder: (_) =>
+                        PlantEditor(plantData, widget.cell, retrievePlant),
                   ))),
         ),
       ],
